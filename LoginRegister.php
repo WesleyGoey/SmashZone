@@ -8,11 +8,11 @@
 </head>
 <body class="bg-green-50 min-h-screen flex items-center justify-center">
     <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
-        <div class="flex flex-col items-center mb-8">
-            <div class="bg-green-800 rounded-full p-3 mb-2 flex items-center justify-center">
+        <div class="flex flex-col items-center mb-6">
+            <div class="bg-green-800 rounded-full p-3 mt-2 mb-4 flex items-center justify-center">
                 <img src="logo.png" alt="SmashZone Logo" class="w-16 h-16 object-cover" />
             </div>
-            <span class="text-2xl font-bold text-green-800 tracking-wide">SmashZone</span>
+            <span class="text-4xl font-bold text-green-800 tracking-wide">SmashZone</span>
         </div>
         <div class="flex justify-center mb-6">
             <button id="loginTab" class="flex-1 py-2 text-lg font-semibold text-green-800 border-b-2 border-green-800 focus:outline-none transition" onclick="showTab('login')">Login</button>
