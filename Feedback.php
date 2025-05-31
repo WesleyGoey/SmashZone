@@ -23,7 +23,7 @@
                 <a href="Home.php" class="hover:underline underline-offset-8">Home</a>
                 <a href="Booking.php" class="hover:underline underline-offset-8">Booking</a>
                 <a href="Feedback.php" class="underline underline-offset-8 hover:underline">Feedback</a>
-                <a href="Home.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
+                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
