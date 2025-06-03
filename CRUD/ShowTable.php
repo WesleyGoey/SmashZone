@@ -118,12 +118,12 @@ function readTransactions()
     return $allData;
 }
 
-function getUserID()
+function getUserID($user_id)
 {
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT user_id FROM Users";
+        $sql_query = "SELECT * FROM Users WHERE user_id = " . $user_id;
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
