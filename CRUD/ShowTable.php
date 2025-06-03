@@ -28,6 +28,7 @@ function readUsers()
                 $data['email'] = $row["email"];
                 $data['password'] = $row["password"];
                 $data['phone'] = $row["phone"];
+                $data['isAdmin'] = $row["isAdmin"];
                 array_push($allData, $data);
             }
         }
@@ -116,4 +117,42 @@ function readTransactions()
     }
     return $allData;
 }
-?>
+
+function getUserID()
+{
+    $data = array();
+    $conn = my_connectDB();
+    if ($conn != NULL) {
+        $sql_query = "SELECT user_id FROM Users";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data['user_id'] = $row["user_id"];
+                $data['username'] = $row["username"];
+                $data['email'] = $row["email"];
+                $data['password'] = $row["password"];
+                $data['phone'] = $row["phone"];
+                $data['isAdmin'] = $row["isAdmin"];
+            }
+        }
+    }
+    my_closeDB($conn);
+    return $data;
+}
+
+function updateUsers($user_id, $username, $email, $password, $phone, $isAdmin)
+{
+    if ($user_id != "" && $username != "" && $email != "" && $password != "" && $phone != "" && $isAdmin != "") {
+        $conn = my_connectDB();
+        $sql_query = "UPDATE Users 
+                        SET username = '$username', 
+                            email = '$email', 
+                            password = '$password', 
+                            phone = '$phone', 
+                            isAdmin = '$isAdmin' 
+                        WHERE user_id = '$user_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
