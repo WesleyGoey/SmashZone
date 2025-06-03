@@ -64,7 +64,46 @@
     <!-- Admin Content Placeholder -->
     <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
         <h2 class="text-2xl font-bold mb-6 text-center">Admin Dashboard</h2>
-        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Bookings Card -->
+            <div class="bg-green-100 rounded-lg p-6 flex flex-col items-center shadow">
+                <div class="text-4xl font-bold text-green-800 mb-2">
+                    <?php
+                    // Replace with actual query to count bookings
+                    // Example: $bookingCount = ...;
+                    echo isset($bookingCount) ? $bookingCount : '12';
+                    ?>
+                </div>
+                <div class="text-lg text-green-900 mb-4">Total Bookings</div>
+                <a href="AdminSchedule.php" class="text-green-700 hover:underline">View Bookings</a>
+            </div>
+            <!-- Feedback Card -->
+            <div class="bg-yellow-100 rounded-lg p-6 flex flex-col items-center shadow">
+                <div class="text-4xl font-bold text-yellow-800 mb-2">
+                    <?php
+                    // Replace with actual query to count feedback
+                    // Example: $feedbackCount = ...;
+                    echo isset($feedbackCount) ? $feedbackCount : '5';
+                    ?>
+                </div>
+                <div class="text-lg text-yellow-900 mb-4">User Feedback</div>
+                <a href="AdminFeedback.php" class="text-yellow-700 hover:underline">View Feedback</a>
+            </div>
+            <!-- Pending Payments Card -->
+            <div class="bg-red-100 rounded-lg p-6 flex flex-col items-center shadow">
+                <div class="text-4xl font-bold text-red-800 mb-2">
+                    <?php
+                    // Replace with actual query to count pending payments
+                    // Example: $pendingPayments = ...;
+                    echo isset($pendingPayments) ? $pendingPayments : '3';
+                    ?>
+                </div>
+                <div class="text-lg text-red-900 mb-4">Pending Payments</div>
+                <a href="AdminPendingPayments.php" class="text-red-700 hover:underline">View Payments</a>
+            </div>
+        </div>
+        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.
+        </p>
     </main>
 
     <script>
@@ -76,7 +115,7 @@
         });
     </script>
 
-    
+
 </body>
 
 </html>
