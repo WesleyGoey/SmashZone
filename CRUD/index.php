@@ -18,6 +18,7 @@
             <li><?= $row["email"] ?></li>
             <li><?= $row["password"] ?></li>
             <li><?= $row["phone"] ?></li>
+            <li><?= $row["isAdmin"] ?></li>
         </ul>
     <?php
     }
