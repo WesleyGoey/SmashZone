@@ -20,6 +20,7 @@
             <li><?= $row["phone"] ?></li>
             <li><?= $row["isAdmin"] ?></li>
         </ul>
+        <a href="Update.php?updateID=<?= $row['user_id'] ?>">Update</a>
     <?php
     }
     ?>
