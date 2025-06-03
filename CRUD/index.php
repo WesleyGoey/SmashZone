@@ -1,16 +1,18 @@
 <?php include_once("ShowTable.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wesley Goeinawan - Nicholas Gerwin Mawardji</title>
 </head>
+
 <body>
     <h1>Read All Users Data</h1>
     <?php
     $result = readUsers();
-    foreach ($result as $row) { 
+    foreach ($result as $row) {
     ?>
         <ul>
             <li><?= $row["user_id"] ?></li>
@@ -28,7 +30,7 @@
     <h1>Read All Fields Data</h1>
     <?php
     $result = readFields();
-    foreach ($result as $row) { 
+    foreach ($result as $row) {
     ?>
         <ul>
             <li><?= $row["field_id"] ?></li>
@@ -43,7 +45,7 @@
     <h1>Read All Reviews Data</h1>
     <?php
     $result = readReviews();
-    foreach ($result as $row) { 
+    foreach ($result as $row) {
     ?>
         <ul>
             <li><?= $row["review_id"] ?></li>
@@ -79,7 +81,7 @@
     <h1>Read All Transactions Data</h1>
     <?php
     $result = readTransactions();
-    foreach ($result as $row) { 
+    foreach ($result as $row) {
     ?>
         <ul>
             <li><?= $row["transaction_id"] ?></li>
@@ -94,4 +96,5 @@
     }
     ?>
 </body>
+
 </html>
