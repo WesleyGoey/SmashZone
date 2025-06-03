@@ -20,7 +20,7 @@
             <li><?= $row["phone"] ?></li>
             <li><?= $row["isAdmin"] ?></li>
         </ul>
-        <a href="Update.php?updateID=<?= $row['user_id'] ?>">Update</a>
+        <a href="Update.php?updateUserID=<?= $row['user_id'] ?>">Update</a>
     <?php
     }
     ?>
@@ -35,6 +35,7 @@
             <li><?= $row["field_name"] ?></li>
             <li><?= $row["price_per_hour"] ?></li>
         </ul>
+        <a href="Update.php?updateFieldID=<?= $row['field_id'] ?>">Update</a>
     <?php
     }
     ?>
@@ -51,6 +52,7 @@
             <li><?= $row["comment"] ?></li>
             <li><?= $row["review_date"] ?></li>
         </ul>
+        <a href="Update.php?updateReviewID=<?= $row['review_id'] ?>">Update</a>
     <?php
     }
     ?>
@@ -69,6 +71,7 @@
             <li><?= $row["end_time"] ?></li>
             <li><?= $row["status"] ?></li>
         </ul>
+        <a href="Update.php?updateBookingID=<?= $row['booking_id'] ?>">Update</a>
     <?php
     }
     ?>
@@ -86,6 +89,7 @@
             <li><?= $row["payment_date"] ?></li>
             <li><?= $row["isPaid"] ?></li>
         </ul>
+        <a href="Update.php?updateTransactionID=<?= $row['transaction_id'] ?>">Update</a>
     <?php
     }
     ?>
