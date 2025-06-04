@@ -14,6 +14,18 @@ function my_closeDB($conn)
     mysqli_close($conn);
 }
 
+function createUsers($username, $email, $password, $phone, $isAdmin)
+{
+    if ($username != "" && $email != "" && $password != "" && $phone != "" && $isAdmin != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Users (username, email, password, phone, isAdmin) 
+                      VALUES ('$username', '$email', '$password', '$phone', '$isAdmin')";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
 function readUsers()
 {
     $allData = array();
@@ -42,7 +54,7 @@ function getUserID($user_id)
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Users WHERE user_id = " . $user_id;
+        $sql_query = "SELECT * FROM Users WHERE user_id = '$user_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -76,6 +88,29 @@ function updateUsers($user_id, $username, $email, $password, $phone, $isAdmin)
     return $result;
 }
 
+function deleteUsers($user_id)
+{
+    if ($user_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Users WHERE user_id = '$user_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function createFields($field_name, $price_per_hour)
+{
+    if ($field_name != "" && $price_per_hour != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Fields (field_name, price_per_hour) 
+                      VALUES ('$field_name', '$price_per_hour')";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
 function readFields()
 {
     $allData = array();
@@ -100,7 +135,7 @@ function getFieldID($field_id)
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Fields WHERE field_id = " . $field_id;
+        $sql_query = "SELECT * FROM Fields WHERE field_id = '$field_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -122,6 +157,29 @@ function updateFields($field_id, $field_name, $price_per_hour)
                         SET field_name = '$field_name', 
                             price_per_hour = '$price_per_hour'
                         WHERE field_id = '$field_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function deleteFields($field_id)
+{
+    if ($field_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Fields WHERE field_id = '$field_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function createReviews($user_id, $rating, $comment, $review_date)
+{
+    if ($user_id != "" && $rating != "" && $comment != "" && $review_date != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Reviews (user_id, rating, comment, review_date) 
+                      VALUES ('$user_id', '$rating', '$comment', '$review_date')";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }
@@ -154,7 +212,7 @@ function getReviewID($review_id)
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Reviews WHERE review_id = " . $review_id;
+        $sql_query = "SELECT * FROM Reviews WHERE review_id = '$review_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -180,6 +238,30 @@ function updateReviews($review_id, $user_id, $rating, $comment, $review_date)
                             comment = '$comment', 
                             review_date = '$review_date'
                         WHERE review_id = '$review_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function deleteReviews($review_id)
+{
+    if ($review_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Reviews WHERE review_id = '$review_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function createBookings($user_id, $field_id, $booking_date, $start_time, $end_time, $status)
+{
+    $result = false;
+    if ($user_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $status != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Bookings (user_id, field_id, booking_date, start_time, end_time, status) 
+                      VALUES ('$user_id', '$field_id', '$booking_date', '$start_time', '$end_time', '$status')";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }
@@ -214,7 +296,7 @@ function getBookingID($booking_id)
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Bookings WHERE booking_id = " . $booking_id;
+        $sql_query = "SELECT * FROM Bookings WHERE booking_id = '$booking_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -250,6 +332,31 @@ function updateBookings($booking_id, $user_id, $field_id, $booking_date, $start_
     return $result;
 }
 
+function deleteBookings($booking_id)
+{
+    if ($booking_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Bookings WHERE booking_id = '$booking_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function createTransactions($booking_id, $amount, $payment_method, $payment_date, $isPaid)
+{
+    $result = false;
+    // isPaid boleh 0 (tidak perlu cek != "")
+    if ($booking_id != "" && $amount != "" && $payment_method != "" && $payment_date != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Transactions (booking_id, amount, payment_method, payment_date, isPaid) 
+                      VALUES ('$booking_id', '$amount', '$payment_method', '$payment_date', '$isPaid')";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
 function readTransactions()
 {
     $allData = array();
@@ -277,7 +384,7 @@ function getTransactionID($transaction_id)
     $data = array();
     $conn = my_connectDB();
     if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Transactions WHERE transaction_id = " . $transaction_id;
+        $sql_query = "SELECT * FROM Transactions WHERE transaction_id = '$transaction_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -305,6 +412,17 @@ function updateTransactions($transaction_id, $booking_id, $amount, $payment_meth
                             payment_date = '$payment_date', 
                             isPaid = '$isPaid'
                         WHERE transaction_id = '$transaction_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function deleteTransactions($transaction_id)
+{
+    if ($transaction_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Transactions WHERE transaction_id = '$transaction_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }

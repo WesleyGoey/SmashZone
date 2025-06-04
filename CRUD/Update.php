@@ -1,4 +1,4 @@
-<?php include_once("ShowTable.php"); ?>
+<?php include_once("Controller.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
 
