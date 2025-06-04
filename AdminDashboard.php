@@ -6,9 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SmashZone Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            min-height: 100vh;
+        }
+    </style>
 </head>
 
-<body class="bg-green-50">
+<body class="bg-green-50 min-h-screen flex flex-col justify-center">
     <!-- Navigation Bar -->
     <header>
         <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
@@ -23,7 +32,7 @@
                 <a href="AdminSchedule.php" class="hover:underline underline-offset-8">Schedule</a>
                 <a href="AdminPendingPayments.php" class="hover:underline underline-offset-8">Pending Payments</a>
                 <a href="AdminFeedback.php" class="hover:underline underline-offset-8">Feedback</a>
-                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -47,7 +56,7 @@
                 <a href="#" class="block py-2 hover:underline">Schedule</a>
                 <a href="#" class="block py-2 hover:underline">Pending Payments</a>
                 <a href="#" class="block py-2 hover:underline">Feedback</a>
-                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -62,48 +71,44 @@
     <!-- /Navigation Bar -->
 
     <!-- Admin Content Placeholder -->
-    <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">Admin Dashboard</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <main class="max-w-6xl mx-auto flex-1 flex flex-col justify-center bg-white p-10 md:p-16 rounded-2xl shadow-lg min-h-[70vh] my-20">
+        <h2 class="text-4xl font-bold mb-12 text-center">Admin Dashboard</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <!-- Bookings Card -->
-            <div class="bg-green-100 rounded-lg p-6 flex flex-col items-center shadow">
-                <div class="text-4xl font-bold text-green-800 mb-2">
+            <a href="AdminSchedule.php" class="bg-green-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-green-300 transition min-h-[200px]">
+                <div class="text-7xl font-semibold text-green-800 mb-4 text-center">
                     <?php
                     // Replace with actual query to count bookings
                     // Example: $bookingCount = ...;
                     echo isset($bookingCount) ? $bookingCount : '12';
                     ?>
                 </div>
-                <div class="text-lg text-green-900 mb-4">Total Bookings</div>
-                <a href="AdminSchedule.php" class="text-green-700 hover:underline">View Bookings</a>
-            </div>
+                <div class="text-xl font-semibold text-green-900 mb-2 text-center">Total Bookings</div>
+            </a>
             <!-- Feedback Card -->
-            <div class="bg-yellow-100 rounded-lg p-6 flex flex-col items-center shadow">
-                <div class="text-4xl font-bold text-yellow-800 mb-2">
+            <a href="AdminFeedback.php" class="bg-yellow-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-yellow-200 transition min-h-[200px]">
+                <div class="text-7xl font-semibold text-yellow-800 mb-4 text-center">
                     <?php
                     // Replace with actual query to count feedback
                     // Example: $feedbackCount = ...;
                     echo isset($feedbackCount) ? $feedbackCount : '5';
                     ?>
                 </div>
-                <div class="text-lg text-yellow-900 mb-4">User Feedback</div>
-                <a href="AdminFeedback.php" class="text-yellow-700 hover:underline">View Feedback</a>
-            </div>
+                <div class="text-xl font-semibold text-yellow-900 mb-2 text-center">User Feedback</div>
+            </a>
             <!-- Pending Payments Card -->
-            <div class="bg-red-100 rounded-lg p-6 flex flex-col items-center shadow">
-                <div class="text-4xl font-bold text-red-800 mb-2">
+            <a href="AdminPendingPayments.php" class="bg-red-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-red-200 transition min-h-[200px]">
+                <div class="text-7xl font-semibold text-red-800 mb-4 text-center">
                     <?php
                     // Replace with actual query to count pending payments
                     // Example: $pendingPayments = ...;
                     echo isset($pendingPayments) ? $pendingPayments : '3';
                     ?>
                 </div>
-                <div class="text-lg text-red-900 mb-4">Pending Payments</div>
-                <a href="AdminPendingPayments.php" class="text-red-700 hover:underline">View Payments</a>
-            </div>
+                <div class="text-xl font-semibold text-red-900 mb-2 text-center">Pending Payments</div>
+            </a>
         </div>
-        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.
-        </p>
+        <p class="text-center text-gray-600 text-lg mt-8">Welcome to the admin dashboard. Select a menu above to manage the system.</p>
     </main>
 
     <script>
