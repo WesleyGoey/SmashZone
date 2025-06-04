@@ -23,7 +23,7 @@
                 <a href="AdminSchedule.php" class="hover:underline underline-offset-8">Schedule</a>
                 <a href="AdminPendingPayments.php" class="hover:underline underline-offset-8">Pending Payments</a>
                 <a href="AdminFeedback.php" class="underline underline-offset-8">Feedback</a>
-                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -47,7 +47,7 @@
                 <a href="#" class="block py-2 hover:underline">Schedule</a>
                 <a href="#" class="block py-2 hover:underline">Pending Payments</a>
                 <a href="#" class="block py-2 hover:underline">Feedback</a>
-                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -63,8 +63,41 @@
 
     <!-- Admin Content Placeholder -->
     <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">Admin Dashboard</h2>
-        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.</p>
+        <h2 class="text-2xl font-bold mb-6 text-center">User Reviews & Feedback</h2>
+        <?php
+        // Use CRUD/Controller.php to fetch reviews
+        require_once __DIR__ . '/CRUD/Controller.php';
+
+        // Use the correct function name from Controller.php
+        // getReviewID should be called with a review_id, so to display all reviews, use readReviews()
+        $reviews = function_exists('readReviews') ? readReviews() : [];
+
+        if ($reviews && count($reviews) > 0) {
+            echo "<div class='grid grid-cols-1 md:grid-cols-2 gap-6'>";
+            foreach ($reviews as $row) {
+                // Get username from Users table using user_id
+                $username = "Unknown";
+                if (function_exists('getUserID')) {
+                    $user = getUserID($row['user_id']);
+                    if ($user && isset($user['username'])) {
+                        $username = $user['username'];
+                    }
+                }
+                $stars = str_repeat('★', intval($row['rating'])) . str_repeat('☆', 5 - intval($row['rating']));
+                echo "<div class='bg-green-50 border border-green-200 rounded-xl shadow p-6 flex flex-col h-full'>
+                    <div class='flex items-center justify-between mb-2'>
+                        <span class='font-semibold text-green-800 text-lg'>" . htmlspecialchars($username) . "</span>
+                        <span class='text-yellow-500 text-xl'>" . $stars . "</span>
+                    </div>
+                    <div class='text-gray-700 mb-3 italic'>\"" . nl2br(htmlspecialchars($row['comment'])) . "\"</div>
+                    <div class='text-gray-400 text-xs text-right mt-auto'>" . htmlspecialchars($row['review_date']) . "</div>
+                </div>";
+            }
+            echo "</div>";
+        } else {
+            echo "<div class='text-center text-gray-500'>No feedback found.</div>";
+        }
+        ?>
     </main>
 
     <script>

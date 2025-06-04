@@ -16,14 +16,14 @@
             <div class="flex items-center gap-3">
                 <img src="logo.png" alt="Logo Penyewa Badminton"
                     class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" />
-                <a href="Home.php" class="text-2xl font-bold">SmashZone</a>
+                <a href="UserDashboard.php" class="text-2xl font-bold">SmashZone</a>
             </div>
 
             <div class="hidden md:flex gap-10 text-xl">
-                <a href="Home.php" class="underline underline-offset-8">Home</a>
+                <a href="UserDashboard.php" class="underline underline-offset-8">Home</a>
                 <a href="Booking.php" class="hover:underline underline-offset-8">Booking</a>
                 <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
-                <a href="LoginRegister.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -43,10 +43,10 @@
 
             <div id="mobileMenu"
                 class="mobile-menu absolute top-full left-0 w-full bg-green-800 text-white flex-col gap-5 px-8 py-4 hidden md:hidden">
-                <a href="Home.html" class="block py-2 hover:underline">Home</a>
+                <a href="UserDashboard.html" class="block py-2 hover:underline">Home</a>
                 <a href="Booking.html" class="block py-2 hover:underline">Booking</a>
                 <a href="Feedback.html" class="block py-2 hover:underline">Feedback</a>
-                <a href="Home.html" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
+                <a href="index.php" class="flex items-center gap-2 text-red-400 hover:text-red-500 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
