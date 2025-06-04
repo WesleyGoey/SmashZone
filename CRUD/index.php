@@ -1,4 +1,4 @@
-<?php include_once("ShowTable.php"); ?>
+<?php include_once("Controller.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +10,7 @@
 
 <body>
     <h1>Read All Users Data</h1>
+    <a href="insert.php">Create New User</a>
     <?php
     $result = readUsers();
     foreach ($result as $row) {
@@ -23,6 +24,7 @@
             <li><?= $row["isAdmin"] ?></li>
         </ul>
         <a href="Update.php?updateUserID=<?= $row['user_id'] ?>">Update</a>
+        <a href="Delete.php?deleteUserID=<?= $row['user_id'] ?>">Delete</a>
     <?php
     }
     ?>

@@ -1,4 +1,4 @@
-<?php include_once("ShowTable.php"); ?>
+<?php include_once("Controller.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,15 +39,17 @@
         $resultUsers = updateUsers($user_id, $username, $email, $password, $phone, $isAdmin);
 
         if ($resultUsers == 1) {
-?>
+        ?>
             <h1>Update User Data with ID <?= $user_id ?> SUCCESS</h1>
             <p>Username : <?= $username ?></p>
             <p>Email : <?= $email ?></p>
             <p>Password : <?= $password ?></p>
             <p>Phone : <?= $phone ?></p>
             <p>isAdmin : <?= $isAdmin ?></p>
+            <a href="index.php">Back to Main</a>
 
         <?php
+
         }
     }
 
@@ -215,7 +217,7 @@
         $resultTransactions = updateTransactions($transaction_id, $booking_id, $amount, $payment_method, $payment_date, $isPaid);
 
         if ($resultTransactions == 1) {
-?>
+        ?>
             <h1>Update Transaction Data with ID <?= $transaction_id ?> SUCCESS</h1>
             <p>Booking ID : <?= $booking_id ?></p>
             <p>Amount : <?= $amount ?></p>

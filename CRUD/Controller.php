@@ -48,6 +48,19 @@ function deleteUser($user_id)
     }
     return false;
 }
+
+function createUser($username, $email, $password, $phone, $isAdmin)
+{
+    if ($username != "" && $email != "" && $password != "" && $phone != "" && $isAdmin != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Users (username, email, password, phone, isAdmin) VALUES ('$username', '$email', '$password', '$phone', '$isAdmin')";
+        $result = mysqli_query($conn, $sql_query) or die("Error: " . mysqli_error($conn));
+        my_closeDB($conn);
+        return $result;
+    }
+    return false;
+}
+
 function getUserID($user_id)
 {
     $data = array();
