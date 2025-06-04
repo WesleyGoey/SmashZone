@@ -35,3 +35,4 @@ if (isset($_GET["deleteBookingID"])) {
         echo "<h1>Delete Booking Data with ID $data_to_be_deleted FAILED</h1>";
     }
 }
+?>
