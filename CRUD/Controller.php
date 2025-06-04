@@ -36,6 +36,19 @@ function readUsers()
     }
     return $allData;
 }
+
+function deleteUser($user_id)
+{
+    if ($user_id > 0) {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Users WHERE user_id = " . $user_id;
+        $result = mysqli_query($conn, $sql_query) or die("Error: " . mysqli_error($conn));
+        my_closeDB($conn);
+        return $result;
+    }
+    return false;
+}
+
 function readFields()
 {
     $allData = array();
