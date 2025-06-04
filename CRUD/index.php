@@ -1,4 +1,4 @@
-<?php include_once("ShowTable.php"); ?>
+<?php include_once("Controller.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +10,7 @@
 
 <body>
     <h1>Read All Users Data</h1>
+    <a href="Create.php?type=user">Create</a>
     <?php
     $result = readUsers();
     foreach ($result as $row) {
@@ -23,11 +24,13 @@
             <li><?= $row["isAdmin"] ?></li>
         </ul>
         <a href="Update.php?updateUserID=<?= $row['user_id'] ?>">Update</a>
+        <a href="Delete.php?deleteUserID=<?= $row['user_id'] ?>">Delete</a>
     <?php
     }
     ?>
 
     <h1>Read All Fields Data</h1>
+    <a href="Create.php?type=field">Create</a>
     <?php
     $result = readFields();
     foreach ($result as $row) {
@@ -38,11 +41,13 @@
             <li><?= $row["price_per_hour"] ?></li>
         </ul>
         <a href="Update.php?updateFieldID=<?= $row['field_id'] ?>">Update</a>
+        <a href="Delete.php?deleteFieldID=<?= $row['field_id'] ?>">Delete</a>
     <?php
     }
     ?>
 
     <h1>Read All Reviews Data</h1>
+    <a href="Create.php?type=review">Create</a>
     <?php
     $result = readReviews();
     foreach ($result as $row) {
@@ -55,11 +60,13 @@
             <li><?= $row["review_date"] ?></li>
         </ul>
         <a href="Update.php?updateReviewID=<?= $row['review_id'] ?>">Update</a>
+        <a href="Delete.php?deleteReviewID=<?= $row['review_id'] ?>">Delete</a>
     <?php
     }
     ?>
 
     <h1>Read All Bookings Data</h1>
+    <a href="Create.php?type=booking">Create</a>
     <?php
     $result = readBookings();
     foreach ($result as $row) {
@@ -74,11 +81,13 @@
             <li><?= $row["status"] ?></li>
         </ul>
         <a href="Update.php?updateBookingID=<?= $row['booking_id'] ?>">Update</a>
+        <a href="Delete.php?deleteBookingID=<?= $row['booking_id'] ?>">Delete</a>
     <?php
     }
     ?>
 
     <h1>Read All Transactions Data</h1>
+    <a href="Create.php?type=transaction">Create</a>
     <?php
     $result = readTransactions();
     foreach ($result as $row) {
@@ -92,6 +101,7 @@
             <li><?= $row["isPaid"] ?></li>
         </ul>
         <a href="Update.php?updateTransactionID=<?= $row['transaction_id'] ?>">Update</a>
+        <a href="Delete.php?deleteTransactionID=<?= $row['transaction_id'] ?>">Delete</a>
     <?php
     }
     ?>
