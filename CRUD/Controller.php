@@ -328,17 +328,25 @@ function getTransactionID($transaction_id)
     return $data;
 }
 
-function updateTransactions($transaction_id, $user_id, $booking_id,$order_date, $amount, $payment_method, $payment_date, $isPaid)
+function updateTransactions($transaction_id, $user_id, $booking_id, $order_date, $amount, $payment_method, $payment_date, $isPaid)
 {
-    if ($transaction_id != "" && $user_id != "" && $booking_id != "" && $order_date != "" && $amount != "" && $payment_method != "" && $payment_date != "" && $isPaid != "") {
+    if ($transaction_id != "" && $user_id != "" && $booking_id != "" && $order_date != "" && $amount != "") {
         $conn = my_connectDB();
+        if ($isPaid == 0) {
+            $payment_method = "NULL";
+            $payment_date = "NULL";
+        }
+        else {
+            $payment_method = "'$payment_method'";
+            $payment_date = "'$payment_date'";
+        }
         $sql_query = "UPDATE Transactions 
                         SET user_id = '$user_id',
                             booking_id = '$booking_id', 
                             order_date = '$order_date',
                             amount = '$amount', 
-                            payment_method = '$payment_method', 
-                            payment_date = '$payment_date', 
+                            payment_method = $payment_method, 
+                            payment_date = $payment_date, 
                             isPaid = '$isPaid'
                         WHERE transaction_id = '$transaction_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));

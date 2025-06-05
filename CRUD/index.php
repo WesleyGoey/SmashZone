@@ -73,7 +73,9 @@
     ?>
         <ul>
             <li><?= $row["transaction_id"] ?></li>
+            <li><?= $row["user_id"] ?></li>
             <li><?= $row["booking_id"] ?></li>
+            <li><?= $row["order_date"] ?></li>
             <li><?= $row["amount"] ?></li>
             <li><?= $row["payment_method"] ?></li>
             <li><?= $row["payment_date"] ?></li>
@@ -93,11 +95,11 @@
     ?>
         <ul>
             <li><?= $row["booking_id"] ?></li>
-            <li><?= $row["user_id"] ?></li>
             <li><?= $row["field_id"] ?></li>
             <li><?= $row["booking_date"] ?></li>
             <li><?= $row["start_time"] ?></li>
             <li><?= $row["end_time"] ?></li>
+            <li><?= $row["booking_price"] ?></li>
             <li><?= $row["status"] ?></li>
         </ul>
         <a href="Update.php?updateBookingID=<?= $row['booking_id'] ?>">Update</a>
