@@ -161,13 +161,13 @@
         $transaction_id = $_POST['update_transaction_id'];
         $user_id = $_POST['update_transaction_user_id'];
         $booking_id = $_POST['update_transaction_booking_id'];
-        $amount = $_POST['update_transaction_amount'];
         $order_date = $_POST['update_transaction_order_date'];
+        $amount = $_POST['update_transaction_amount'];
         $payment_method = $_POST['update_transaction_payment_method'];
         $payment_date = $_POST['update_transaction_payment_date'];
         $isPaid = isset($_POST['update_transaction_isPaid']) ? 1 : 0;
 
-        $resultTransactions = updateTransactions($transaction_id, $user_id, $booking_id, $amount, $order_date, $payment_method, $payment_date, $isPaid);
+        $resultTransactions = updateTransactions($transaction_id, $user_id, $booking_id, $order_date, $amount, $payment_method, $payment_date, $isPaid);
 
         if ($resultTransactions == 1) {
         ?>
@@ -196,11 +196,11 @@
         ?>
             <form action="Update.php" method="POST">
                 <p>Booking ID: <input type="text" name="update_booking_id" value="<?= $data['booking_id'] ?>"></p>
-                <p>User ID: <input type="text" name="update_booking_user_id" value="<?= $data['user_id'] ?>"></p>
                 <p>Field ID: <input type="text" name="update_booking_field_id" value="<?= $data['field_id'] ?>"></p>
                 <p>Booking Date: <input type="text" name="update_booking_date" value="<?= $data['booking_date'] ?>"></p>
                 <p>Start Time: <input type="text" name="update_booking_start_time" value="<?= $data['start_time'] ?>"></p>
                 <p>End Time: <input type="text" name="update_booking_end_time" value="<?= $data['end_time'] ?>"></p>
+                <p>Booking Price: <input type="number" name="update_booking_price" value="<?= $data['booking_price'] ?>"></p>
                 <p>Status: <input type="text" name="update_booking_status" value="<?= $data['status'] ?>"></p>
                 <p><input type="submit" name="update_booking_submit" value="UPDATE" /></p>
             </form>
