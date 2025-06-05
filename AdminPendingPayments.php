@@ -75,12 +75,10 @@
         if ($pendingTransactions && count($pendingTransactions) > 0) {
             echo "<div class='flex flex-col gap-4'>";
             foreach ($pendingTransactions as $transaction) {
-                // Get booking info
-                $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
-                // Get user info
+                // Get user info directly from transaction table (user_id is present)
                 $username = "Unknown";
-                if ($booking && isset($booking['user_id']) && function_exists('getUserID')) {
-                    $user = getUserID($booking['user_id']);
+                if (isset($transaction['user_id']) && function_exists('getUserID')) {
+                    $user = getUserID($transaction['user_id']);
                     if ($user && isset($user['username'])) {
                         $username = $user['username'];
                     }
