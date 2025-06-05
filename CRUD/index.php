@@ -95,6 +95,7 @@
     ?>
         <ul>
             <li><?= $row["booking_id"] ?></li>
+            <li><?= $row["order_name"] ?></li>
             <li><?= $row["field_id"] ?></li>
             <li><?= $row["booking_date"] ?></li>
             <li><?= $row["start_time"] ?></li>

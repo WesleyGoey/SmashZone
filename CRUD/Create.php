@@ -83,23 +83,25 @@
     if ($type == 'booking') {
     ?>
         <form action="Create.php?type=booking" method="POST">
-            <p>User ID: <input type="number" name="create_booking_user_id" required></p>
+            <p>Order Name: <input type="text" name="create_booking_order_name" required></p>
             <p>Field ID: <input type="number" name="create_booking_field_id" required></p>
             <p>Booking Date: <input type="date" name="create_booking_date" required></p>
             <p>Start Time: <input type="time" name="create_booking_start_time" required></p>
             <p>End Time: <input type="time" name="create_booking_end_time" required></p>
-            <p>Status: <input type="text" name="create_booking_status" required></p>
+            <p>Booking Price: <input type="number" name="create_booking_price" required></p>
+            <p>Status: <input type="checkbox" name="create_booking_status" value="1"></p>
             <p><input type="submit" name="create_booking_submit" value="CREATE" /></p>
         </form>
         <?php
         if (isset($_POST['create_booking_submit'])) {
-            $user_id = $_POST['create_booking_user_id'];
+            $order_name = $_POST['create_booking_order_name'];
             $field_id = $_POST['create_booking_field_id'];
             $booking_date = $_POST['create_booking_date'];
             $start_time = $_POST['create_booking_start_time'];
             $end_time = $_POST['create_booking_end_time'];
-            $status = $_POST['create_booking_status'];
-            $resultBookings = createBookings($user_id, $field_id, $booking_date, $start_time, $end_time, $status);
+            $booking_price = $_POST['create_booking_price'];
+            $status = isset($_POST['create_booking_status']) ? 1 : 0;
+            $resultBookings = createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
             if ($resultBookings) {
                 echo "<h1>Create Booking Data SUCCESS</h1>";
             } else {
@@ -111,7 +113,9 @@
     if ($type == 'transaction') {
     ?>
         <form action="Create.php?type=transaction" method="POST">
+            <p>User ID: <input type="number" name="create_transaction_user_id" required></p>
             <p>Booking ID: <input type="number" name="create_transaction_booking_id" required></p>
+            <p>Order Date: <input type="datetime-local" name="create_transaction_order_date" required></p>
             <p>Amount: <input type="number" name="create_transaction_amount" required></p>
             <p>Payment Method: <input type="text" name="create_payment_method" required></p>
             <p>Payment Date: <input type="datetime-local" name="create_payment_date" required></p>
@@ -120,12 +124,14 @@
         </form>
     <?php
         if (isset($_POST['create_transaction_submit'])) {
+            $user_id = $_POST['create_transaction_user_id'];
             $booking_id = $_POST['create_transaction_booking_id'];
+            $order_date = $_POST['create_transaction_order_date'];
             $amount = $_POST['create_transaction_amount'];
             $payment_method = $_POST['create_payment_method'];
             $payment_date = $_POST['create_payment_date'];
             $isPaid = isset($_POST['create_is_paid']) ? 1 : 0;
-            $resultTransactions = createTransactions($booking_id, $amount, $payment_method, $payment_date, $isPaid);
+            $resultTransactions = createTransactions($user_id, $booking_id, $order_date, $amount, $payment_method, $payment_date, $isPaid);
             if ($resultTransactions) {
                 echo "<h1>Create Transaction Data SUCCESS</h1>";
             } else {

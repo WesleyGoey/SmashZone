@@ -266,14 +266,14 @@ function deleteReviews($review_id)
     return $result;
 }
 
-function createTransactions($booking_id, $amount, $payment_method, $payment_date, $isPaid)
+function createTransactions($user_id, $booking_id, $order_date, $amount, $payment_method, $payment_date, $isPaid)
 {
     $result = false;
     // isPaid boleh 0 (tidak perlu cek != "")
-    if ($booking_id != "" && $amount != "" && $payment_method != "" && $payment_date != "") {
+    if ($user_id != "" && $booking_id != "" && $order_date != "" && $amount != "") {
         $conn = my_connectDB();
-        $sql_query = "INSERT INTO Transactions (booking_id, amount, payment_method, payment_date, isPaid) 
-                      VALUES ('$booking_id', '$amount', '$payment_method', '$payment_date', '$isPaid')";
+        $sql_query = "INSERT INTO Transactions (user_id, booking_id, order_date, amount, payment_method, payment_date, isPaid) 
+                      VALUES ('$user_id', '$booking_id', '$order_date', '$amount', '$payment_method', '$payment_date', '$isPaid')";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }
@@ -366,13 +366,13 @@ function deleteTransactions($transaction_id)
     return $result;
 }
 
-function createBookings($user_id, $field_id, $booking_date, $start_time, $end_time, $status)
+function createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status)
 {
     $result = false;
-    if ($user_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $status != "") {
+    if ($order_name != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $booking_price != "") {
         $conn = my_connectDB();
-        $sql_query = "INSERT INTO Bookings (user_id, field_id, booking_date, start_time, end_time, status) 
-                      VALUES ('$user_id', '$field_id', '$booking_date', '$start_time', '$end_time', '$status')";
+        $sql_query = "INSERT INTO Bookings (order_name, field_id, booking_date, start_time, end_time, booking_price, status) 
+                      VALUES ('$order_name', '$field_id', '$booking_date', '$start_time', '$end_time', '$booking_price', '$status')";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }
@@ -389,6 +389,7 @@ function readBookings()
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $data['booking_id'] = $row["booking_id"];
+                $data['order_name'] = $row["order_name"];
                 $data['field_id'] = $row["field_id"];
                 $data['booking_date'] = $row["booking_date"];
                 $data['start_time'] = $row["start_time"];
@@ -412,6 +413,7 @@ function getBookingID($booking_id)
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $data['booking_id'] = $row["booking_id"];
+                $data['order_name'] = $row["order_name"];
                 $data['field_id'] = $row["field_id"];
                 $data['booking_date'] = $row["booking_date"];
                 $data['start_time'] = $row["start_time"];
@@ -425,12 +427,13 @@ function getBookingID($booking_id)
     return $data;
 }
 
-function updateBookings($booking_id, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status)
+function updateBookings($booking_id, $order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status)
 {
-    if ($booking_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $booking_price != "" && $status != "") {
+    if ($booking_id != "" && $order_name != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $booking_price != "" && $status != "") {
         $conn = my_connectDB();
         $sql_query = "UPDATE Bookings 
-                        SET  field_id = '$field_id', 
+                        SET order_name = '$order_name',
+                            field_id = '$field_id',
                             booking_date = '$booking_date', 
                             start_time = '$start_time', 
                             end_time = '$end_time', 
