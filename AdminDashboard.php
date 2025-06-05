@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SmashZone Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
-        body {
-            min-height: 100vh;
-        }
-    </style>
 </head>
 
 <body class="bg-green-50 min-h-screen flex flex-col justify-center">
