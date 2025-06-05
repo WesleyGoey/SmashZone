@@ -71,8 +71,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court A</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20A" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
 
             <div class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
@@ -81,8 +80,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court B</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20B" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
 
             <div class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
@@ -91,8 +89,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court C</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20C" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
 
             <div class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
@@ -101,8 +98,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court D</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20D" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
 
             <div class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
@@ -111,8 +107,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court E</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20E" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
 
             <div class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
@@ -121,8 +116,7 @@
                 </div>
                 <h3 class="text-lg font-semibold mb-1">Court F</h3>
                 <p class="text-green-700 font-bold mb-2 text-sm">Rp 100,000 / hour</p>
-                <button class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See
-                    Detail</button>
+                <a href="BookingCourt.php?court=Court%20F" class="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-900 text-sm transition">See Detail</a>
             </div>
         </div>
     </main>

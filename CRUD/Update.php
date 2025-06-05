@@ -196,6 +196,7 @@
         ?>
             <form action="Update.php" method="POST">
                 <p>Booking ID: <input type="text" name="update_booking_id" value="<?= $data['booking_id'] ?>"></p>
+                <p>Order Name: <input type="text" name="update_booking_order_name" value="<?= $data['order_name'] ?>"></p>
                 <p>Field ID: <input type="text" name="update_booking_field_id" value="<?= $data['field_id'] ?>"></p>
                 <p>Booking Date: <input type="text" name="update_booking_date" value="<?= $data['booking_date'] ?>"></p>
                 <p>Start Time: <input type="text" name="update_booking_start_time" value="<?= $data['start_time'] ?>"></p>
@@ -209,6 +210,7 @@
     }
     if (isset($_POST['update_booking_submit'])) {
         $booking_id = $_POST['update_booking_id'];
+        $order_name = $_POST['update_booking_order_name'];
         $field_id = $_POST['update_booking_field_id'];
         $booking_date = $_POST['update_booking_date'];
         $start_time = $_POST['update_booking_start_time'];
@@ -216,11 +218,12 @@
         $booking_price = $_POST['update_booking_price'];
         $status = $_POST['update_booking_status'];
 
-        $resultBookings = updateBookings($booking_id, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
+        $resultBookings = updateBookings($booking_id, $order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
 
         if ($resultBookings == 1) {
         ?>
             <h1>Update Booking Data with ID <?= $booking_id ?> SUCCESS</h1>
+            <p>Order Name : <?= $order_name ?></p>
             <p>Field ID : <?= $field_id ?></p>
             <p>Booking Date : <?= $booking_date ?></p>
             <p>Start Time : <?= $start_time ?></p>
