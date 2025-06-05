@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SmashZone</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <?php
+    session_start();
+    require_once __DIR__ . '/CRUD/Controller.php';
+    $feedbackSuccess = null;
+    $feedbackError = null;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
+        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        $comment = trim($_POST['feedback']);
+        $rating = intval($_POST['rating']);
+        $review_date = date('Y-m-d H:i:s');
+        if ($user_id && $comment && $rating > 0) {
+            $result = createReviews($user_id, $rating, $comment, $review_date);
+            if ($result) {
+                $feedbackSuccess = "Thank you for your feedback!";
+            } else {
+                $feedbackError = "Failed to submit feedback. Please try again.";
+            }
+        } else {
+            $feedbackError = "Please provide feedback and a rating.";
+        }
+    }
+    ?>
 </head>
 
 <body class="bg-green-50">
@@ -62,10 +85,15 @@
 
     <main class="max-w-lg mx-auto mt-24 bg-white p-8 rounded-lg shadow">
         <h2 class="text-2xl font-bold mb-6 text-center">Give Your Feedback</h2>
-        <form>
+        <?php if (isset($feedbackSuccess)): ?>
+            <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2 text-center"><?= $feedbackSuccess ?></div>
+        <?php elseif (isset($feedbackError)): ?>
+            <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2 text-center"><?= $feedbackError ?></div>
+        <?php endif; ?>
+        <form method="POST" action="">
             <label for="feedback" class="block mb-2 font-semibold">Your Feedback</label>
             <textarea id="feedback" name="feedback" rows="4" class="w-full border rounded p-2 mb-4"
-                placeholder="Write your feedback here..."></textarea>
+                placeholder="Write your feedback here..." required></textarea>
 
             <label class="block mb-2 font-semibold text-center w-full">Rating</label>
             <div class="flex justify-center mb-6">
@@ -79,7 +107,7 @@
             </div>
             <input type="hidden" name="rating" id="rating" value="0" />
 
-            <button type="submit"
+            <button type="submit" name="feedback_submit"
                 class="w-full bg-green-700 text-white py-2 rounded hover:bg-green-900 transition">Submit</button>
         </form>
     </main>
