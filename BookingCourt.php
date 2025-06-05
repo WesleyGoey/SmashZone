@@ -24,13 +24,13 @@ foreach ($fields as $field) {
 $message = '';
 if (isset($_POST['book_submit'])) {
     $order_name = isset($_POST['order_name']) ? trim($_POST['order_name']) : '';
-    $booking_date = $_POST['booking_date'];
-    $start_time = $_POST['start_time'];
-    $end_time = $_POST['end_time'];
-    $status = "Pending";
-    $booking_price = $price_per_hour; // Atur sesuai kebutuhan
+    $booking_date = isset($_POST['booking_date']) ? $_POST['booking_date'] : '';
+    $start_time = isset($_POST['start_time']) ? $_POST['start_time'] : '';
+    $end_time = isset($_POST['end_time']) ? $_POST['end_time'] : '';
+    $status = 1;
+    $booking_price = $price_per_hour;
 
-    if ($field_id && $order_name != '') {
+    if ($field_id && $order_name != '' && $booking_date != '' && $start_time != '' && $end_time != '') {
         $result = createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
         if ($result) {
             header("Location: Booking.php");

@@ -101,6 +101,7 @@ function updateUsers($user_id, $username, $email, $password, $phone, $isAdmin)
 
 function deleteUsers($user_id)
 {
+    $result = false;
     if ($user_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Users WHERE user_id = '$user_id'";
@@ -176,6 +177,7 @@ function updateFields($field_id, $field_name, $price_per_hour)
 
 function deleteFields($field_id)
 {
+    $result = false;
     if ($field_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Fields WHERE field_id = '$field_id'";
@@ -257,6 +259,7 @@ function updateReviews($review_id, $user_id, $rating, $comment, $review_date)
 
 function deleteReviews($review_id)
 {
+    $result = false;
     if ($review_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Reviews WHERE review_id = '$review_id'";
@@ -357,6 +360,7 @@ function updateTransactions($transaction_id, $user_id, $booking_id, $order_date,
 
 function deleteTransactions($transaction_id)
 {
+    $result = false;
     if ($transaction_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Transactions WHERE transaction_id = '$transaction_id'";
@@ -448,6 +452,7 @@ function updateBookings($booking_id, $order_name, $field_id, $booking_date, $sta
 
 function deleteBookings($booking_id)
 {
+    $result = false;
     if ($booking_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Bookings WHERE booking_id = '$booking_id'";
