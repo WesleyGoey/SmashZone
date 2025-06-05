@@ -63,8 +63,46 @@
 
     <!-- Admin Content Placeholder -->
     <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">Admin Dashboard</h2>
-        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.</p>
+        <h2 class="text-2xl font-bold mb-6 text-center">Pending Payments</h2>
+        <?php
+        require_once __DIR__ . '/CRUD/Controller.php';
+
+        // Get all transactions that are not paid
+        $pendingTransactions = array_filter(readTransactions(), function($t) {
+            return isset($t['isPaid']) && $t['isPaid'] == 0;
+        });
+
+        if ($pendingTransactions && count($pendingTransactions) > 0) {
+            echo "<div class='flex flex-col gap-4'>";
+            foreach ($pendingTransactions as $transaction) {
+                // Get booking info
+                $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
+                // Get user info
+                $username = "Unknown";
+                if ($booking && isset($booking['user_id']) && function_exists('getUserID')) {
+                    $user = getUserID($booking['user_id']);
+                    if ($user && isset($user['username'])) {
+                        $username = $user['username'];
+                    }
+                }
+                echo "
+                <div class='bg-red-50 border border-red-200 rounded-xl shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between'>
+                    <div>
+                        <span class='font-semibold text-red-800'>Booking ID:</span>
+                        <span class='font-mono'>" . htmlspecialchars($transaction['booking_id']) . "</span>
+                    </div>
+                    <div>
+                        <span class='font-semibold text-gray-700'>Username:</span>
+                        <span class='text-green-800'>" . htmlspecialchars($username) . "</span>
+                    </div>
+                </div>
+                ";
+            }
+            echo "</div>";
+        } else {
+            echo "<div class='text-center text-gray-500'>No pending payments found.</div>";
+        }
+        ?>
     </main>
 
     <script>
