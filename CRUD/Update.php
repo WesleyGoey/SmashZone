@@ -39,7 +39,7 @@
         $resultUsers = updateUsers($user_id, $username, $email, $password, $phone, $isAdmin);
 
         if ($resultUsers == 1) {
-?>
+        ?>
             <h1>Update User Data with ID <?= $user_id ?> SUCCESS</h1>
             <p>Username : <?= $username ?></p>
             <p>Email : <?= $email ?></p>
@@ -131,6 +131,57 @@
         }
     }
 
+    if (isset($_GET["updateTransactionID"])) {
+        $data_to_be_updated = $_GET["updateTransactionID"];
+        $transactions = readTransactions();
+        $data = null;
+        foreach ($transactions as $t) {
+            if ($t['transaction_id'] == $data_to_be_updated) {
+                $data = $t;
+                break;
+            }
+        }
+        if ($data) {
+        ?>
+            <form action="Update.php" method="POST">
+                <p>Transaction ID: <input type="text" name="update_transaction_id" value="<?= $data['transaction_id'] ?>"></p>
+                <p>User ID: <input type="text" name="update_transaction_user_id" value="<?= $data['user_id'] ?>"></p>
+                <p>Booking ID: <input type="text" name="update_transaction_booking_id" value="<?= $data['booking_id'] ?>"></p>
+                <p>Order Date: <input type="text" name="update_transaction_order_date" value="<?= $data['order_date'] ?>"></p>
+                <p>Amount: <input type="number" name="update_transaction_amount" value="<?= $data['amount'] ?>"></p>
+                <p>Payment Method: <input type="text" name="update_transaction_payment_method" value="<?= $data['payment_method'] ?>"></p>
+                <p>Payment Date: <input type="text" name="update_transaction_payment_date" value="<?= $data['payment_date'] ?>"></p>
+                <p>isPaid: <input type="checkbox" name="update_transaction_isPaid" value="1" <?= $data['isPaid'] ? 'checked' : '' ?>></p>
+                <p><input type="submit" name="update_transaction_submit" value="UPDATE" /></p>
+            </form>
+        <?php
+        }
+    }
+    if (isset($_POST['update_transaction_submit'])) {
+        $transaction_id = $_POST['update_transaction_id'];
+        $user_id = $_POST['update_transaction_user_id'];
+        $booking_id = $_POST['update_transaction_booking_id'];
+        $amount = $_POST['update_transaction_amount'];
+        $order_date = $_POST['update_transaction_order_date'];
+        $payment_method = $_POST['update_transaction_payment_method'];
+        $payment_date = $_POST['update_transaction_payment_date'];
+        $isPaid = isset($_POST['update_transaction_isPaid']) ? 1 : 0;
+
+        $resultTransactions = updateTransactions($transaction_id, $user_id, $booking_id, $amount, $order_date, $payment_method, $payment_date, $isPaid);
+
+        if ($resultTransactions == 1) {
+        ?>
+            <h1>Update Transaction Data with ID <?= $transaction_id ?> SUCCESS</h1>
+            <p>User ID : <?= $user_id ?></p>
+            <p>Booking ID : <?= $booking_id ?></p>
+            <p>Order Date : <?= $order_date ?></p>
+            <p>Amount : <?= $amount ?></p>
+            <p>Payment Method : <?= $payment_method ?></p>
+            <p>Payment Date : <?= $payment_date ?></p>
+            <p>isPaid : <?= $isPaid ?></p>
+    <?php
+        }
+    }
     if (isset($_GET["updateBookingID"])) {
         $data_to_be_updated = $_GET["updateBookingID"];
         $bookings = readBookings();
@@ -158,71 +209,25 @@
     }
     if (isset($_POST['update_booking_submit'])) {
         $booking_id = $_POST['update_booking_id'];
-        $user_id = $_POST['update_booking_user_id'];
         $field_id = $_POST['update_booking_field_id'];
         $booking_date = $_POST['update_booking_date'];
         $start_time = $_POST['update_booking_start_time'];
         $end_time = $_POST['update_booking_end_time'];
+        $booking_price = $_POST['update_booking_price'];
         $status = $_POST['update_booking_status'];
 
-        $resultBookings = updateBookings($booking_id, $user_id, $field_id, $booking_date, $start_time, $end_time, $status);
+        $resultBookings = updateBookings($booking_id, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
 
         if ($resultBookings == 1) {
         ?>
             <h1>Update Booking Data with ID <?= $booking_id ?> SUCCESS</h1>
-            <p>User ID : <?= $user_id ?></p>
             <p>Field ID : <?= $field_id ?></p>
             <p>Booking Date : <?= $booking_date ?></p>
             <p>Start Time : <?= $start_time ?></p>
             <p>End Time : <?= $end_time ?></p>
+            <p>Booking Price : <?= $booking_price ?></p>
             <p>Status : <?= $status ?></p>
         <?php
-        }
-    }
-
-    if (isset($_GET["updateTransactionID"])) {
-        $data_to_be_updated = $_GET["updateTransactionID"];
-        $transactions = readTransactions();
-        $data = null;
-        foreach ($transactions as $t) {
-            if ($t['transaction_id'] == $data_to_be_updated) {
-                $data = $t;
-                break;
-            }
-        }
-        if ($data) {
-        ?>
-            <form action="Update.php" method="POST">
-                <p>Transaction ID: <input type="text" name="update_transaction_id" value="<?= $data['transaction_id'] ?>"></p>
-                <p>Booking ID: <input type="text" name="update_transaction_booking_id" value="<?= $data['booking_id'] ?>"></p>
-                <p>Amount: <input type="number" name="update_transaction_amount" value="<?= $data['amount'] ?>"></p>
-                <p>Payment Method: <input type="text" name="update_transaction_payment_method" value="<?= $data['payment_method'] ?>"></p>
-                <p>Payment Date: <input type="text" name="update_transaction_payment_date" value="<?= $data['payment_date'] ?>"></p>
-                <p>isPaid: <input type="checkbox" name="update_transaction_isPaid" value="1" <?= $data['isPaid'] ? 'checked' : '' ?>></p>
-                <p><input type="submit" name="update_transaction_submit" value="UPDATE" /></p>
-            </form>
-        <?php
-        }
-    }
-    if (isset($_POST['update_transaction_submit'])) {
-        $transaction_id = $_POST['update_transaction_id'];
-        $booking_id = $_POST['update_transaction_booking_id'];
-        $amount = $_POST['update_transaction_amount'];
-        $payment_method = $_POST['update_transaction_payment_method'];
-        $payment_date = $_POST['update_transaction_payment_date'];
-        $isPaid = isset($_POST['update_transaction_isPaid']) ? 1 : 0;
-
-        $resultTransactions = updateTransactions($transaction_id, $booking_id, $amount, $payment_method, $payment_date, $isPaid);
-
-        if ($resultTransactions == 1) {
-?>
-            <h1>Update Transaction Data with ID <?= $transaction_id ?> SUCCESS</h1>
-            <p>Booking ID : <?= $booking_id ?></p>
-            <p>Amount : <?= $amount ?></p>
-            <p>Payment Method : <?= $payment_method ?></p>
-            <p>Payment Date : <?= $payment_date ?></p>
-            <p>isPaid : <?= $isPaid ?></p>
-    <?php
         }
     }
     ?>

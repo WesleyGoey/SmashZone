@@ -266,94 +266,6 @@ function deleteReviews($review_id)
     return $result;
 }
 
-function createBookings($user_id, $field_id, $booking_date, $start_time, $end_time, $status)
-{
-    $result = false;
-    if ($user_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $status != "") {
-        $conn = my_connectDB();
-        $sql_query = "INSERT INTO Bookings (user_id, field_id, booking_date, start_time, end_time, status) 
-                      VALUES ('$user_id', '$field_id', '$booking_date', '$start_time', '$end_time', '$status')";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        my_closeDB($conn);
-    }
-    return $result;
-}
-
-function readBookings()
-{
-    $allData = array();
-    $conn = my_connectDB();
-    if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Bookings";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data['booking_id'] = $row["booking_id"];
-                $data['user_id'] = $row["user_id"];
-                $data['field_id'] = $row["field_id"];
-                $data['booking_date'] = $row["booking_date"];
-                $data['start_time'] = $row["start_time"];
-                $data['end_time'] = $row["end_time"];
-                $data['status'] = $row["status"];
-                array_push($allData, $data);
-            }
-        }
-    }
-    return $allData;
-}
-
-function getBookingID($booking_id)
-{
-    $data = array();
-    $conn = my_connectDB();
-    if ($conn != NULL) {
-        $sql_query = "SELECT * FROM Bookings WHERE booking_id = '$booking_id'";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data['booking_id'] = $row["booking_id"];
-                $data['user_id'] = $row["user_id"];
-                $data['field_id'] = $row["field_id"];
-                $data['booking_date'] = $row["booking_date"];
-                $data['start_time'] = $row["start_time"];
-                $data['end_time'] = $row["end_time"];
-                $data['status'] = $row["status"];
-            }
-        }
-    }
-    my_closeDB($conn);
-    return $data;
-}
-
-function updateBookings($booking_id, $user_id, $field_id, $booking_date, $start_time, $end_time, $status)
-{
-    if ($booking_id != "" && $user_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $status != "") {
-        $conn = my_connectDB();
-        $sql_query = "UPDATE Bookings 
-                        SET user_id = '$user_id', 
-                            field_id = '$field_id', 
-                            booking_date = '$booking_date', 
-                            start_time = '$start_time', 
-                            end_time = '$end_time', 
-                            status = '$status'
-                        WHERE booking_id = '$booking_id'";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        my_closeDB($conn);
-    }
-    return $result;
-}
-
-function deleteBookings($booking_id)
-{
-    if ($booking_id != "") {
-        $conn = my_connectDB();
-        $sql_query = "DELETE FROM Bookings WHERE booking_id = '$booking_id'";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        my_closeDB($conn);
-    }
-    return $result;
-}
-
 function createTransactions($booking_id, $amount, $payment_method, $payment_date, $isPaid)
 {
     $result = false;
@@ -378,7 +290,9 @@ function readTransactions()
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $data['transaction_id'] = $row["transaction_id"];
+                $data['user_id'] = $row["user_id"];
                 $data['booking_id'] = $row["booking_id"];
+                $data['order_date'] = $row["order_date"];
                 $data['amount'] = $row["amount"];
                 $data['payment_method'] = $row["payment_method"];
                 $data['payment_date'] = $row["payment_date"];
@@ -400,7 +314,9 @@ function getTransactionID($transaction_id)
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $data['transaction_id'] = $row["transaction_id"];
+                $data['user_id'] = $row["user_id"];
                 $data['booking_id'] = $row["booking_id"];
+                $data['order_date'] = $row["order_date"];
                 $data['amount'] = $row["amount"];
                 $data['payment_method'] = $row["payment_method"];
                 $data['payment_date'] = $row["payment_date"];
@@ -412,12 +328,14 @@ function getTransactionID($transaction_id)
     return $data;
 }
 
-function updateTransactions($transaction_id, $booking_id, $amount, $payment_method, $payment_date, $isPaid)
+function updateTransactions($transaction_id, $user_id, $booking_id,$order_date, $amount, $payment_method, $payment_date, $isPaid)
 {
-    if ($transaction_id != "" && $booking_id != "" && $amount != "" && $payment_method != "" && $payment_date != "" && $isPaid != "") {
+    if ($transaction_id != "" && $user_id != "" && $booking_id != "" && $order_date != "" && $amount != "" && $payment_method != "" && $payment_date != "" && $isPaid != "") {
         $conn = my_connectDB();
         $sql_query = "UPDATE Transactions 
-                        SET booking_id = '$booking_id', 
+                        SET user_id = '$user_id',
+                            booking_id = '$booking_id', 
+                            order_date = '$order_date',
                             amount = '$amount', 
                             payment_method = '$payment_method', 
                             payment_date = '$payment_date', 
@@ -434,6 +352,94 @@ function deleteTransactions($transaction_id)
     if ($transaction_id != "") {
         $conn = my_connectDB();
         $sql_query = "DELETE FROM Transactions WHERE transaction_id = '$transaction_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function createBookings($user_id, $field_id, $booking_date, $start_time, $end_time, $status)
+{
+    $result = false;
+    if ($user_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $status != "") {
+        $conn = my_connectDB();
+        $sql_query = "INSERT INTO Bookings (user_id, field_id, booking_date, start_time, end_time, status) 
+                      VALUES ('$user_id', '$field_id', '$booking_date', '$start_time', '$end_time', '$status')";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function readBookings()
+{
+    $allData = array();
+    $conn = my_connectDB();
+    if ($conn != NULL) {
+        $sql_query = "SELECT * FROM Bookings";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data['booking_id'] = $row["booking_id"];
+                $data['field_id'] = $row["field_id"];
+                $data['booking_date'] = $row["booking_date"];
+                $data['start_time'] = $row["start_time"];
+                $data['end_time'] = $row["end_time"];
+                $data['booking_price'] = $row["booking_price"];
+                $data['status'] = $row["status"];
+                array_push($allData, $data);
+            }
+        }
+    }
+    return $allData;
+}
+
+function getBookingID($booking_id)
+{
+    $data = array();
+    $conn = my_connectDB();
+    if ($conn != NULL) {
+        $sql_query = "SELECT * FROM Bookings WHERE booking_id = '$booking_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data['booking_id'] = $row["booking_id"];
+                $data['field_id'] = $row["field_id"];
+                $data['booking_date'] = $row["booking_date"];
+                $data['start_time'] = $row["start_time"];
+                $data['end_time'] = $row["end_time"];
+                $data['booking_price'] = $row["booking_price"];
+                $data['status'] = $row["status"];
+            }
+        }
+    }
+    my_closeDB($conn);
+    return $data;
+}
+
+function updateBookings($booking_id, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status)
+{
+    if ($booking_id != "" && $field_id != "" && $booking_date != "" && $start_time != "" && $end_time != "" && $booking_price != "" && $status != "") {
+        $conn = my_connectDB();
+        $sql_query = "UPDATE Bookings 
+                        SET  field_id = '$field_id', 
+                            booking_date = '$booking_date', 
+                            start_time = '$start_time', 
+                            end_time = '$end_time', 
+                            booking_price = '$booking_price',
+                            status = '$status'
+                        WHERE booking_id = '$booking_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
+
+function deleteBookings($booking_id)
+{
+    if ($booking_id != "") {
+        $conn = my_connectDB();
+        $sql_query = "DELETE FROM Bookings WHERE booking_id = '$booking_id'";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }

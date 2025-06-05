@@ -65,6 +65,26 @@
     }
     ?>
 
+    <h1>Read All Transactions Data</h1>
+    <a href="Create.php?type=transaction">Create</a>
+    <?php
+    $result = readTransactions();
+    foreach ($result as $row) {
+    ?>
+        <ul>
+            <li><?= $row["transaction_id"] ?></li>
+            <li><?= $row["booking_id"] ?></li>
+            <li><?= $row["amount"] ?></li>
+            <li><?= $row["payment_method"] ?></li>
+            <li><?= $row["payment_date"] ?></li>
+            <li><?= $row["isPaid"] ?></li>
+        </ul>
+        <a href="Update.php?updateTransactionID=<?= $row['transaction_id'] ?>">Update</a>
+        <a href="Delete.php?deleteTransactionID=<?= $row['transaction_id'] ?>">Delete</a>
+    <?php
+    }
+    ?>
+
     <h1>Read All Bookings Data</h1>
     <a href="Create.php?type=booking">Create</a>
     <?php
@@ -82,26 +102,6 @@
         </ul>
         <a href="Update.php?updateBookingID=<?= $row['booking_id'] ?>">Update</a>
         <a href="Delete.php?deleteBookingID=<?= $row['booking_id'] ?>">Delete</a>
-    <?php
-    }
-    ?>
-
-    <h1>Read All Transactions Data</h1>
-    <a href="Create.php?type=transaction">Create</a>
-    <?php
-    $result = readTransactions();
-    foreach ($result as $row) {
-    ?>
-        <ul>
-            <li><?= $row["transaction_id"] ?></li>
-            <li><?= $row["booking_id"] ?></li>
-            <li><?= $row["amount"] ?></li>
-            <li><?= $row["payment_method"] ?></li>
-            <li><?= $row["payment_date"] ?></li>
-            <li><?= $row["isPaid"] ?></li>
-        </ul>
-        <a href="Update.php?updateTransactionID=<?= $row['transaction_id'] ?>">Update</a>
-        <a href="Delete.php?deleteTransactionID=<?= $row['transaction_id'] ?>">Delete</a>
     <?php
     }
     ?>
