@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SmashZone Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <?php
+    require_once __DIR__ . '/CRUD/Controller.php';
+    // Get total bookings
+    $bookingCount = count(readBookings());
+    // Get total feedback
+    $feedbackCount = count(readReviews());
+    // Get total pending payments
+    $pendingPayments = 0;
+    $transactions = readTransactions();
+    foreach ($transactions as $t) {
+        if (isset($t['isPaid']) && $t['isPaid'] == 0) {
+            $pendingPayments++;
+        }
+    }
+    ?>
 </head>
 
 <body class="bg-green-50 min-h-screen flex flex-col justify-center">
@@ -61,7 +76,6 @@
     </header>
     <!-- /Navigation Bar -->
 
-    <!-- Admin Content Placeholder -->
     <main class="max-w-6xl mx-auto flex-1 flex flex-col justify-center bg-white p-10 md:p-16 rounded-2xl shadow-lg min-h-[70vh] my-20">
         <h2 class="text-4xl font-bold mb-12 text-center">Admin Dashboard</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
@@ -69,9 +83,7 @@
             <a href="AdminSchedule.php" class="bg-green-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-green-300 transition min-h-[200px]">
                 <div class="text-7xl font-semibold text-green-800 mb-4 text-center">
                     <?php
-                    // Replace with actual query to count bookings
-                    // Example: $bookingCount = ...;
-                    echo isset($bookingCount) ? $bookingCount : '12';
+                    echo isset($bookingCount) ? $bookingCount : '0';
                     ?>
                 </div>
                 <div class="text-xl font-semibold text-green-900 mb-2 text-center">Total Bookings</div>
@@ -80,9 +92,7 @@
             <a href="AdminFeedback.php" class="bg-yellow-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-yellow-200 transition min-h-[200px]">
                 <div class="text-7xl font-semibold text-yellow-800 mb-4 text-center">
                     <?php
-                    // Replace with actual query to count feedback
-                    // Example: $feedbackCount = ...;
-                    echo isset($feedbackCount) ? $feedbackCount : '5';
+                    echo isset($feedbackCount) ? $feedbackCount : '0';
                     ?>
                 </div>
                 <div class="text-xl font-semibold text-yellow-900 mb-2 text-center">User Feedback</div>
@@ -91,9 +101,7 @@
             <a href="AdminPendingPayments.php" class="bg-red-100 rounded-xl p-7 flex flex-col justify-center items-center shadow cursor-pointer hover:ring-4 hover:ring-red-200 transition min-h-[200px]">
                 <div class="text-7xl font-semibold text-red-800 mb-4 text-center">
                     <?php
-                    // Replace with actual query to count pending payments
-                    // Example: $pendingPayments = ...;
-                    echo isset($pendingPayments) ? $pendingPayments : '3';
+                    echo isset($pendingPayments) ? $pendingPayments : '0';
                     ?>
                 </div>
                 <div class="text-xl font-semibold text-red-900 mb-2 text-center">Pending Payments</div>
