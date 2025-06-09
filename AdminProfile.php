@@ -62,11 +62,12 @@ if (isset($_POST['update_profile'])) {
         <!-- Desktop Menu -->
         <div class="hidden md:flex items-center gap-8">
             <div class="flex gap-10 text-xl">
-                <a href="Dashboard.php" class="hover:underline underline-offset-8">Home</a>
-                <a href="Booking.php" class="hover:underline underline-offset-8">Booking</a>
-                <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
+                <a href="AdminDashboard.php" class="hover:underline underline-offset-8">Dashboard</a>
+                <a href="AdminSchedule.php" class="hover:underline underline-offset-8">Schedule</a>
+                <a href="AdminPendingPayments.php" class="hover:underline underline-offset-8">Pending Payments</a>
+                <a href="AdminFeedback.php" class="hover:underline underline-offset-8">Feedback</a>
             </div>
-            <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition ml-4">
+            <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition ml-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <circle cx="12" cy="8" r="4" />
@@ -82,7 +83,7 @@ if (isset($_POST['update_profile'])) {
                         d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
                 </svg>
             </button>
-            <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
+            <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <circle cx="12" cy="8" r="4" />
@@ -93,9 +94,10 @@ if (isset($_POST['update_profile'])) {
         <!-- Mobile Menu -->
         <div id="mobileMenu"
             class="mobile-menu absolute top-full left-0 w-full bg-green-800 text-white flex flex-col gap-2 px-8 py-4 hidden md:hidden z-50">
-            <a href="Dashboard.php" class="block py-2 hover:underline">Home</a>
-            <a href="Booking.php" class="block py-2 hover:underline">Booking</a>
-            <a href="Feedback.php" class="block py-2 hover:underline">Feedback</a>
+            <a href="AdminDashboard.php" class="block py-2 hover:underline">Dashboard</a>
+            <a href="AdminSchedule.php" class="block py-2 hover:underline">Schedule</a>
+            <a href="AdminPendingPayments.php" class="block py-2 hover:underline">Pending Payments</a>
+            <a href="AdminFeedback.php" class="block py-2 hover:underline">Feedback</a>
         </div>
     </nav>
     <!-- End Navbar -->
