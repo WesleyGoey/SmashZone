@@ -25,7 +25,7 @@
         if ($username && $email && $password && $phone) {
             $result = createUsers($username, $email, $password, $phone, $isAdmin);
             if ($result) {
-                header("Location: UserDashboard.php");
+                header("Location: Dashboard.php");
                 exit();
             } else {
                 $registerError = "Registration failed. Please try again.";
@@ -50,7 +50,7 @@
                 if ($user['isAdmin']) {
                     header("Location: AdminDashboard.php");
                 } else {
-                    header("Location: UserDashboard.php");
+                    header("Location: Dashboard.php");
                 }
                 exit();
             }
