@@ -69,6 +69,50 @@
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
 
+        // Handle mark as paid action with payment method and date
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_paid'], $_POST['transaction_id'])) {
+            $transaction_id = $_POST['transaction_id'];
+            $payment_method = trim($_POST['payment_method']);
+            $payment_date = trim($_POST['payment_date']);
+
+            if ($payment_method && $payment_date) {
+                if (function_exists('updateTransactions')) {
+                    // Get current transaction data
+                    $transactions = readTransactions();
+                    $transaction = null;
+                    foreach ($transactions as $t) {
+                        if ($t['transaction_id'] == $transaction_id) {
+                            $transaction = $t;
+                            break;
+                        }
+                    }
+                    if ($transaction) {
+                        updateTransactions(
+                            $transaction_id,
+                            $transaction['user_id'],
+                            $transaction['booking_id'],
+                            $transaction['order_date'],
+                            $transaction['amount'],
+                            $payment_method,
+                            $payment_date,
+                            1 // isPaid
+                        );
+                    }
+                } else {
+                    // Fallback: direct SQL if updateTransactions doesn't exist
+                    $conn = my_connectDB();
+                    if ($conn) {
+                        $transaction_id_safe = mysqli_real_escape_string($conn, $transaction_id);
+                        $payment_method_safe = mysqli_real_escape_string($conn, $payment_method);
+                        $payment_date_safe = mysqli_real_escape_string($conn, $payment_date);
+                        $sql = "UPDATE Transactions SET isPaid=1, payment_method='$payment_method_safe', payment_date='$payment_date_safe' WHERE transaction_id='$transaction_id_safe'";
+                        mysqli_query($conn, $sql);
+                        my_closeDB($conn);
+                    }
+                }
+            }
+        }
+
         // Get all transactions that are not paid
         $pendingTransactions = array_filter(readTransactions(), function($t) {
             return isset($t['isPaid']) && $t['isPaid'] == 0;
@@ -77,7 +121,6 @@
         if ($pendingTransactions && count($pendingTransactions) > 0) {
             echo "<div class='flex flex-col gap-4'>";
             foreach ($pendingTransactions as $transaction) {
-                // Get user info directly from transaction table (user_id is present)
                 $username = "Unknown";
                 if (isset($transaction['user_id']) && function_exists('getUserID')) {
                     $user = getUserID($transaction['user_id']);
@@ -85,6 +128,8 @@
                         $username = $user['username'];
                     }
                 }
+                // Show payment form for the transaction being marked as paid
+                $showForm = (isset($_POST['show_form']) && $_POST['transaction_id'] == $transaction['transaction_id']);
                 echo "
                 <div class='bg-red-50 border border-red-200 rounded-xl shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between'>
                     <div>
@@ -94,9 +139,25 @@
                     <div>
                         <span class='font-semibold text-gray-700'>Username:</span>
                         <span class='text-green-800'>" . htmlspecialchars($username) . "</span>
-                    </div>
-                </div>
-                ";
+                    </div>";
+                if ($showForm) {
+                    echo "
+                    <form method='POST' class='mt-2 md:mt-0 flex flex-col md:flex-row gap-2 items-center'>
+                        <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
+                        <input type='text' name='payment_method' placeholder='Payment Method' required class='border rounded px-2 py-1' />
+                        <input type='datetime-local' name='payment_date' required class='border rounded px-2 py-1' />
+                        <button type='submit' name='mark_paid' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition'>Confirm Paid</button>
+                    </form>
+                    ";
+                } else {
+                    echo "
+                    <form method='POST' class='mt-2 md:mt-0'>
+                        <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
+                        <button type='submit' name='show_form' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition'>Mark as Paid</button>
+                    </form>
+                    ";
+                }
+                echo "</div>";
             }
             echo "</div>";
         } else {

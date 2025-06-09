@@ -65,8 +65,56 @@
 
     <!-- Admin Content Placeholder -->
     <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">Admin Dashboard</h2>
-        <p class="text-center text-gray-600">Welcome to the admin dashboard. Select a menu above to manage the system.</p>
+        <h2 class="text-2xl font-bold mb-6 text-center">All Field Bookings</h2>
+        <?php
+        require_once __DIR__ . '/CRUD/Controller.php';
+        $bookings = readBookings();
+        // Sort by booking_date and start_time
+        usort($bookings, function($a, $b) {
+            $dateA = $a['booking_date'] . ' ' . $a['start_time'];
+            $dateB = $b['booking_date'] . ' ' . $b['start_time'];
+            return strcmp($dateA, $dateB);
+        });
+        if (count($bookings) > 0): ?>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow">
+                    <thead>
+                        <tr class="bg-green-100 text-green-900">
+                            <th class="py-2 px-4 border-b">Booking ID</th>
+                            <th class="py-2 px-4 border-b">Order Name</th>
+                            <th class="py-2 px-4 border-b">Field Name</th>
+                            <th class="py-2 px-4 border-b">Booking Date</th>
+                            <th class="py-2 px-4 border-b">Start Time</th>
+                            <th class="py-2 px-4 border-b">End Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($bookings as $booking): ?>
+                            <?php
+                                // Get field name from field_id
+                                $fieldName = $booking['field_id'];
+                                if (function_exists('getFieldID')) {
+                                    $field = getFieldID($booking['field_id']);
+                                    if ($field && isset($field['field_name'])) {
+                                        $fieldName = $field['field_name'];
+                                    }
+                                }
+                            ?>
+                            <tr class="text-center border-b hover:bg-green-50">
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking['booking_id']) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking['order_name']) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($fieldName) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking['booking_date']) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking['start_time']) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking['end_time']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="text-center text-gray-500">No bookings found.</div>
+        <?php endif; ?>
     </main>
 
     <script>
