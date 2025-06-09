@@ -187,6 +187,13 @@
     </footer>
     <!-- /Footer -->
 
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
 </body>
-
 </html>

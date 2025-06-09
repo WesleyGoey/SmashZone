@@ -1,3 +1,67 @@
+<?php
+session_start();
+$registerSuccess = null;
+$registerError = null;
+$loginError = null;
+
+require_once __DIR__ . '/CRUD/Controller.php';
+
+// Handle registration
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
+    $username = trim($_POST['register_username']);
+    $email = trim($_POST['register_email']);
+    $password = trim($_POST['register_password']);
+    $phone = trim($_POST['register_phone']);
+    $isAdmin = 0; // Default to regular user
+
+    if ($username && $email && $password && $phone) {
+        $result = createUsers($username, $email, $password, $phone, $isAdmin);
+        if ($result) {
+            // Ambil user yang baru saja didaftarkan
+            $users = readUsers();
+            foreach ($users as $user) {
+                if ($user['username'] === $username && $user['email'] === $email) {
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['isAdmin'] = $user['isAdmin'];
+                    break;
+                }
+            }
+            header("Location: Dashboard.php");
+            exit();
+        } else {
+            $registerError = "Registration failed. Please try again.";
+        }
+    } else {
+        $registerError = "All fields are required.";
+    }
+}
+
+// Handle login
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_submit'])) {
+    $login_username = trim($_POST['login_username']);
+    $login_password = trim($_POST['login_password']);
+    $users = readUsers();
+    $found = false;
+    foreach ($users as $user) {
+        if ($user['username'] === $login_username && $user['password'] === $login_password) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['isAdmin'] = $user['isAdmin'];
+            $found = true;
+            if ($user['isAdmin']) {
+                header("Location: AdminDashboard.php");
+            } else {
+                header("Location: Dashboard.php");
+            }
+            exit();
+        }
+    }
+    if (!$found) {
+        $loginError = "Invalid username or password.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -6,60 +70,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Login / Register - SmashZone</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <?php
-    session_start();
-    $registerSuccess = null;
-    $registerError = null;
-    $loginError = null;
-
-    require_once __DIR__ . '/CRUD/Controller.php';
-
-    // Handle registration
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
-        $username = trim($_POST['register_username']);
-        $email = trim($_POST['register_email']);
-        $password = trim($_POST['register_password']);
-        $phone = trim($_POST['register_phone']);
-        $isAdmin = 0; // Default to regular user
-
-        if ($username && $email && $password && $phone) {
-            $result = createUsers($username, $email, $password, $phone, $isAdmin);
-            if ($result) {
-                header("Location: Dashboard.php");
-                exit();
-            } else {
-                $registerError = "Registration failed. Please try again.";
-            }
-        } else {
-            $registerError = "All fields are required.";
-        }
-    }
-
-    // Handle login
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_submit'])) {
-        $login_username = trim($_POST['login_username']);
-        $login_password = trim($_POST['login_password']);
-        $users = readUsers();
-        $found = false;
-        foreach ($users as $user) {
-            if ($user['username'] === $login_username && $user['password'] === $login_password) {
-                $_SESSION['user_id'] = $user['user_id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['isAdmin'] = $user['isAdmin'];
-                $found = true;
-                if ($user['isAdmin']) {
-                    header("Location: AdminDashboard.php");
-                } else {
-                    header("Location: Dashboard.php");
-                }
-                exit();
-            }
-        }
-        if (!$found) {
-            $loginError = "Invalid username or password.";
-        }
-    }
-    ?>
 </head>
 
 <body class="bg-green-50 min-h-screen flex items-center justify-center">
@@ -143,5 +153,4 @@
         }
     </script>
 </body>
-
 </html>
