@@ -43,6 +43,18 @@ if (isset($_POST['update_profile'])) {
         $message = "<div class='text-red-700 font-bold mb-2'>All fields are required.</div>";
     }
 }
+
+if (isset($_POST['delete_account'])) {
+    // Hapus user dari database
+    $user_id = $_SESSION['user_id'];
+    if (deleteUsers($user_id)) {
+        session_destroy();
+        header("Location: index.php");
+        exit();
+    } else {
+        $message = "<div class='text-red-700 font-bold mb-2'>Failed to delete account.</div>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -127,10 +139,15 @@ if (isset($_POST['update_profile'])) {
                 </div>
                 <button type="submit" name="update_profile" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-900 w-full">Update Profile</button>
             </form>
-            <form method="POST" class="flex flex-col items-center">
-                <button type="submit" name="logout" class="bg-red-600 hover:bg-red-800 text-white px-6 py-2 rounded font-semibold transition">Logout</button>
-            </form>
-            <div class="mt-6 text-center">
+            <div class="flex flex-col items-start gap-2">
+                <form method="POST">
+                    <button type="submit" name="logout" class="text-red-600 hover:underline font-semibold">Logout</button>
+                </form>
+                <form method="POST">
+                    <button type="submit" name="delete_account" class="text-red-600 hover:underline font-semibold">Delete My Account</button>
+                </form>
+            </div>
+            <div class="mt-4">
                 <a href="Dashboard.php" class="text-green-700 hover:underline">&larr; Back to Dashboard</a>
             </div>
         </div>
