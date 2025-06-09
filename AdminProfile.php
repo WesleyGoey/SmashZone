@@ -129,11 +129,13 @@ if (isset($_POST['update_profile'])) {
                 </div>
                 <button type="submit" name="update_profile" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-900 w-full">Update Profile</button>
             </form>
-            <form method="POST" class="flex flex-col items-center">
-                <button type="submit" name="logout" class="bg-red-600 hover:bg-red-800 text-white px-6 py-2 rounded font-semibold transition">Logout</button>
-            </form>
-            <div class="mt-6 text-center">
-                <a href="Dashboard.php" class="text-green-700 hover:underline">&larr; Back to Dashboard</a>
+            <div class="flex flex-col items-start gap-2">
+                <form method="POST">
+                    <button type="submit" name="logout" class="text-red-600 hover:underline font-semibold">Logout</button>
+                </form>
+            </div>
+            <div class="mt-4">
+                <a href="AdminDashboard.php" class="text-green-700 hover:underline">&larr; Back to Dashboard</a>
             </div>
         </div>
     </main>
