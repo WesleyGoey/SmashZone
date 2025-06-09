@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -122,6 +125,80 @@
         </div>
     </main>
     <!-- /Court List -->
+
+    <!-- Current Bookings Section -->
+    <section class="max-w-4xl mx-auto my-16 bg-white p-8 rounded-lg shadow">
+        <h2 class="text-2xl font-bold mb-6 text-center text-green-800">Your Current Bookings</h2>
+        <?php
+        require_once __DIR__ . '/CRUD/Controller.php';
+        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        $user_transactions = [];
+        if ($user_id) {
+            // Find transactions where user_id matches the logged-in user and is not paid
+            $all_transactions = readTransactions();
+            foreach ($all_transactions as $transaction) {
+                if (
+                    isset($transaction['user_id']) && $transaction['user_id'] == $user_id &&
+                    isset($transaction['isPaid']) && $transaction['isPaid'] == 0
+                ) {
+                    $user_transactions[] = $transaction;
+                }
+            }
+        }
+        if ($user_id && count($user_transactions) > 0): ?>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow">
+                    <thead>
+                        <tr class="bg-green-100 text-green-900">
+                            <th class="py-2 px-4 border-b">Booking ID</th>
+                            <th class="py-2 px-4 border-b">Order Name</th>
+                            <th class="py-2 px-4 border-b">Field Name</th>
+                            <th class="py-2 px-4 border-b">Booking Date</th>
+                            <th class="py-2 px-4 border-b">Start Time</th>
+                            <th class="py-2 px-4 border-b">End Time</th>
+                            <th class="py-2 px-4 border-b">Status</th>
+                            <th class="py-2 px-4 border-b">Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($user_transactions as $transaction): ?>
+                            <?php
+                                // Get booking info
+                                $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
+                                $order_name = $booking && isset($booking['order_name']) ? $booking['order_name'] : '-';
+                                $fieldName = $booking && isset($booking['field_id']) ? $booking['field_id'] : '-';
+                                if ($booking && function_exists('getFieldID')) {
+                                    $field = getFieldID($booking['field_id']);
+                                    if ($field && isset($field['field_name'])) {
+                                        $fieldName = $field['field_name'];
+                                    }
+                                }
+                                $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : '-';
+                                $start_time = $booking && isset($booking['start_time']) ? $booking['start_time'] : '-';
+                                $end_time = $booking && isset($booking['end_time']) ? $booking['end_time'] : '-';
+                                $status = $booking && isset($booking['status']) ? $booking['status'] : '-';
+                                $isPaid = isset($transaction['isPaid']) && $transaction['isPaid'] ? 'Yes' : 'No';
+                            ?>
+                            <tr class="text-center border-b hover:bg-green-50">
+                                <td class="py-2 px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($order_name) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($fieldName) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($booking_date) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($start_time) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($end_time) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($status) ?></td>
+                                <td class="py-2 px-4"><?= htmlspecialchars($isPaid) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php elseif ($user_id): ?>
+            <div class="text-center text-gray-500">You have no bookings yet.</div>
+        <?php else: ?>
+            <div class="text-center text-gray-500">Please log in to see your bookings.</div>
+        <?php endif; ?>
+    </section>
 
     <script>
         // Hamburger menu toggle

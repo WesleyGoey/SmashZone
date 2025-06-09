@@ -461,15 +461,3 @@ function deleteBookings($booking_id)
     }
     return $result;
 }
-
-function updateTransactionStatus($transaction_id, $isPaid)
-{
-    $result = false;
-    if ($transaction_id != "" && ($isPaid == 0 || $isPaid == 1)) {
-        $conn = my_connectDB();
-        $sql_query = "UPDATE Transactions SET isPaid = '$isPaid' WHERE transaction_id = '$transaction_id'";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
-        my_closeDB($conn);
-    }
-    return $result;
-}

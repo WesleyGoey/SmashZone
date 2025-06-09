@@ -33,6 +33,34 @@ if (isset($_POST['book_submit'])) {
     if ($field_id && $order_name != '' && $booking_date != '' && $start_time != '' && $end_time != '') {
         $result = createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
         if ($result) {
+            // Get the last inserted booking_id using a new connection
+            $conn = my_connectDB();
+            $booking_id = null;
+            $get_id_query = "SELECT booking_id FROM Bookings WHERE order_name='$order_name' AND field_id='$field_id' AND booking_date='$booking_date' AND start_time='$start_time' AND end_time='$end_time' ORDER BY booking_id DESC LIMIT 1";
+            $get_id_result = mysqli_query($conn, $get_id_query);
+            if ($get_id_result && $row = mysqli_fetch_assoc($get_id_result)) {
+                $booking_id = $row['booking_id'];
+            }
+
+            // Calculate duration in hours
+            $start = strtotime($start_time);
+            $end = strtotime($end_time);
+            $hours = ($end - $start) / 3600;
+            if ($hours < 1) $hours = 1; // Minimum 1 hour
+
+            // Create transaction for this booking
+            $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+            $order_date = date('Y-m-d H:i:s');
+            $amount = $booking_price * $hours;
+            $isPaid = 0;
+            if ($user_id && $booking_id) {
+                // Insert NULL for payment_method and payment_date using direct SQL
+                $sql = "INSERT INTO Transactions (user_id, booking_id, order_date, amount, payment_method, payment_date, isPaid) 
+                        VALUES ('$user_id', '$booking_id', '$order_date', '$amount', NULL, NULL, '$isPaid')";
+                mysqli_query($conn, $sql);
+            }
+            my_closeDB($conn);
+
             header("Location: Booking.php");
             exit();
         } else {
