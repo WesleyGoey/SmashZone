@@ -2,24 +2,13 @@
 session_start();
 require_once "CRUD/Controller.php";
 
-// Get profile picture from session if available
-if (isset($_SESSION['profile_picture'])) {
-    $profile_picture = $_SESSION['profile_picture'];
-    $user_profile_picture = $_SESSION['profile_picture'];
-} else {
-    $profile_picture = "";
-    $user_profile_picture = "";
-    if (isset($_SESSION['user_id'])) {
-        $user = getUserID($_SESSION['user_id']);
-        if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-            $profile_picture = $user['profile_picture'];
-            $user_profile_picture = $user['profile_picture'];
-            $_SESSION['profile_picture'] = $profile_picture;
-        }
+$user_profile_picture = "";
+if (isset($_SESSION['user_id'])) {
+    $user = getUserID($_SESSION['user_id']);
+    if ($user && !empty($user['profile_picture'])) {
+        $user_profile_picture = $user['profile_picture'];
     }
 }
-
-include_once("CRUD/Controller.php");
 
 // Get court name from URL
 $court = isset($_GET['court']) ? $_GET['court'] : '';
@@ -151,11 +140,16 @@ if (isset($_POST['book_submit'])) {
                 <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
             </div>
             <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
-                </svg>
+                <?php if (!empty($user_profile_picture)): ?>
+                    <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
+                        class="w-8 h-8 rounded-full object-cover" />
+                <?php else: ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
+                    </svg>
+                <?php endif; ?>
             </a>
         </div>
         <!-- Mobile Right: Hamburger + Profile -->
@@ -167,11 +161,16 @@ if (isset($_POST['book_submit'])) {
                 </svg>
             </button>
             <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
-                </svg>
+                <?php if (!empty($user_profile_picture)): ?>
+                    <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
+                        class="w-8 h-8 rounded-full object-cover" />
+                <?php else: ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
+                    </svg>
+                <?php endif; ?>
             </a>
         </div>
         <!-- Mobile Menu -->

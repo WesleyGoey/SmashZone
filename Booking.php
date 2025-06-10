@@ -2,36 +2,15 @@
 session_start();
 require_once "CRUD/Controller.php";
 
-// Cancel handler DITARUH PALING ATAS!
-if (isset($_POST['cancel_transaction_id']) && isset($_POST['cancel_booking_id'])) {
-    $tid = $_POST['cancel_transaction_id'];
-    $bid = $_POST['cancel_booking_id'];
-    deleteTransactions($tid);
-    deleteBookings($bid);
-    // Optional: tampilkan pesan sukses
-    $message = "<div class='text-green-700 font-bold mb-2'>Booking cancelled successfully.</div>";
-}
-
-// Get profile picture from session if available
-if (isset($_SESSION['profile_picture'])) {
-    $profile_picture = $_SESSION['profile_picture'];
-    $user_profile_picture = $_SESSION['profile_picture'];
-} else {
-    $profile_picture = "";
-    $user_profile_picture = "";
-
-    // Try to get from database if user is logged in
-    if (isset($_SESSION['user_id'])) {
-        $user = getUserID($_SESSION['user_id']);
-        if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-            $profile_picture = $user['profile_picture'];
-            $user_profile_picture = $user['profile_picture'];
-            // Store in session for future use
-            $_SESSION['profile_picture'] = $profile_picture;
-        }
+$user_profile_picture = "";
+if (isset($_SESSION['user_id'])) {
+    $user = getUserID($_SESSION['user_id']);
+    if ($user && !empty($user['profile_picture'])) {
+        $user_profile_picture = $user['profile_picture'];
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -61,12 +40,13 @@ if (isset($_SESSION['profile_picture'])) {
                     <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
                 </div>
                 <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <?php if ($user_profile_picture): ?>
+                    <?php if (!empty($user_profile_picture)): ?>
                         <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
                             class="w-8 h-8 rounded-full object-cover" />
                     <?php else: ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            viewBox="0 0 24 24">
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
                         </svg>
@@ -83,7 +63,7 @@ if (isset($_SESSION['profile_picture'])) {
                     </svg>
                 </button>
                 <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <?php if ($user_profile_picture): ?>
+                    <?php if (!empty($user_profile_picture)): ?>
                         <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
                             class="w-8 h-8 rounded-full object-cover" />
                     <?php else: ?>

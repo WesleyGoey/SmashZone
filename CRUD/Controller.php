@@ -75,6 +75,7 @@ function getUserID($user_id)
                 $data['password'] = $row["password"];
                 $data['phone'] = $row["phone"];
                 $data['isAdmin'] = $row["isAdmin"];
+                $data['profile_picture'] = isset($row["profile_picture"]) ? $row["profile_picture"] : ""; // Add this line
             }
         }
     }
@@ -464,7 +465,6 @@ function deleteBookings($booking_id)
 
 function updateUserProfilePicture($user_id, $profile_picture_path)
 {
-    $result = false;
     if ($user_id != "") {
         $conn = my_connectDB();
         if ($conn) {
@@ -472,19 +472,20 @@ function updateUserProfilePicture($user_id, $profile_picture_path)
                 if ($profile_picture_path == "") {
                     $sql_query = "UPDATE Users SET profile_picture=NULL WHERE user_id='$user_id'";
                 } else {
+                    // Make sure to escape the path properly
                     $profile_picture_path_sql = mysqli_real_escape_string($conn, $profile_picture_path);
                     $sql_query = "UPDATE Users SET profile_picture='$profile_picture_path_sql' WHERE user_id='$user_id'";
                 }
+                
+                // Execute and return true/false based on success
                 $result = mysqli_query($conn, $sql_query);
-                if (!$result) {
-                    error_log("SQL Error: " . mysqli_error($conn));
-                }
+                my_closeDB($conn);
+                return $result;
             } catch (Exception $e) {
-                error_log("Exception: " . $e->getMessage());
+                my_closeDB($conn);
+                return false;
             }
-            my_closeDB($conn);
         }
     }
-    return $result;
+    return false;
 }
-
