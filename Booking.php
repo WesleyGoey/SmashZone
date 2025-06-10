@@ -132,15 +132,12 @@ session_start();
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
         $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+        // Tampilkan semua transaksi user, baik yang sudah dibayar maupun belum
         $user_transactions = [];
         if ($user_id) {
-            // Find transactions where user_id matches the logged-in user and is not paid
             $all_transactions = readTransactions();
             foreach ($all_transactions as $transaction) {
-                if (
-                    isset($transaction['user_id']) && $transaction['user_id'] == $user_id &&
-                    isset($transaction['isPaid']) && $transaction['isPaid'] == 0
-                ) {
+                if (isset($transaction['user_id']) && $transaction['user_id'] == $user_id) {
                     $user_transactions[] = $transaction;
                 }
             }
@@ -156,14 +153,13 @@ session_start();
                             <th class="py-2 px-4 border-b">Booking Date</th>
                             <th class="py-2 px-4 border-b">Start Time</th>
                             <th class="py-2 px-4 border-b">End Time</th>
-                            <th class="py-2 px-4 border-b">Status</th>
                             <th class="py-2 px-4 border-b">Paid</th>
+                            <th class="py-2 px-4 border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($user_transactions as $transaction): ?>
                             <?php
-                                // Get booking info
                                 $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
                                 $order_name = $booking && isset($booking['order_name']) ? $booking['order_name'] : '-';
                                 $fieldName = $booking && isset($booking['field_id']) ? $booking['field_id'] : '-';
@@ -176,8 +172,10 @@ session_start();
                                 $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : '-';
                                 $start_time = $booking && isset($booking['start_time']) ? $booking['start_time'] : '-';
                                 $end_time = $booking && isset($booking['end_time']) ? $booking['end_time'] : '-';
-                                $status = $booking && isset($booking['status']) ? $booking['status'] : '-';
-                                $isPaid = isset($transaction['isPaid']) && $transaction['isPaid'] ? 'Yes' : 'No';
+                                $today = date('Y-m-d');
+                                $isPaidBool = isset($transaction['isPaid']) && $transaction['isPaid'] == 1;
+                                $can_cancel = ($booking_date !== '-' && $today < $booking_date && !$isPaidBool);
+                                $isPaid = $isPaidBool ? '<span class="text-green-700 font-semibold">Paid</span>' : '<span class="text-red-600 font-semibold">Not Paid</span>';
                             ?>
                             <tr class="text-center border-b hover:bg-green-50">
                                 <td class="py-2 px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td>
@@ -186,8 +184,19 @@ session_start();
                                 <td class="py-2 px-4"><?= htmlspecialchars($booking_date) ?></td>
                                 <td class="py-2 px-4"><?= htmlspecialchars($start_time) ?></td>
                                 <td class="py-2 px-4"><?= htmlspecialchars($end_time) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($status) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($isPaid) ?></td>
+                                <td class="py-2 px-4"><?= $isPaid ?></td>
+                                <td class="py-2 px-4">
+                                    <?php if ($isPaidBool): ?>
+                                        <span class="text-gray-400 italic">Not cancellable</span>
+                                    <?php elseif ($can_cancel): ?>
+                                        <a href="CRUD/Delete.php?deleteTransactionID=<?= $transaction['transaction_id'] ?>&deleteBookingID=<?= $transaction['booking_id'] ?>"
+                                           class="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded text-sm transition">
+                                            Cancel
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-gray-400 italic">Not cancellable</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
