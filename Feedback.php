@@ -10,23 +10,11 @@
     session_start();
     require_once "CRUD/Controller.php";
 
-    // Get profile picture from session if available
-    if (isset($_SESSION['profile_picture'])) {
-        $profile_picture = $_SESSION['profile_picture'];
-        $user_profile_picture = $_SESSION['profile_picture'];
-    } else {
-        $profile_picture = "";
-        $user_profile_picture = "";
-        
-        // Try to get from database if user is logged in
-        if (isset($_SESSION['user_id'])) {
-            $user = getUserID($_SESSION['user_id']);
-            if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-                $profile_picture = $user['profile_picture']; 
-                $user_profile_picture = $user['profile_picture'];
-                // Store in session for future use
-                $_SESSION['profile_picture'] = $profile_picture;
-            }
+    $user_profile_picture = "";
+    if (isset($_SESSION['user_id'])) {
+        $user = getUserID($_SESSION['user_id']);
+        if ($user && !empty($user['profile_picture'])) {
+            $user_profile_picture = $user['profile_picture'];
         }
     }
 
@@ -71,7 +59,7 @@
                     <a href="Feedback.php" class="underline underline-offset-8 hover:underline">Feedback</a>
                 </div>
                 <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <?php if ($user_profile_picture): ?>
+                    <?php if (!empty($user_profile_picture)): ?>
                         <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
                             class="w-8 h-8 rounded-full object-cover" />
                     <?php else: ?>
