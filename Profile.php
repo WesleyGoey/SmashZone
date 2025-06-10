@@ -10,12 +10,30 @@ $username = isset($user['username']) ? $user['username'] : '';
 $email = isset($user['email']) ? $user['email'] : '';
 $phone = isset($user['phone']) ? $user['phone'] : '';
 $password = isset($user['password']) ? $user['password'] : '';
+$profile_picture = isset($user['profile_picture']) && $user['profile_picture'] ? $user['profile_picture'] : 'logo.png';
 $message = '';
 
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: index.php");
-    exit();
+// Handle profile picture upload
+if (isset($_POST['upload_picture']) && isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 0) {
+    $target_dir = "uploads/";
+    if (!is_dir($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    $ext = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    if (in_array($ext, $allowed)) {
+        $new_filename = "profile_" . $_SESSION['user_id'] . "_" . time() . "." . $ext;
+        $target_file = $target_dir . $new_filename;
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_file)) {
+            updateUserProfilePicture($_SESSION['user_id'], $target_file);
+            $profile_picture = $target_file;
+            $message = "<div class='text-green-700 font-bold mb-2'>Profile picture updated!</div>";
+        } else {
+            $message = "<div class='text-red-700 font-bold mb-2'>Failed to upload image.</div>";
+        }
+    } else {
+        $message = "<div class='text-red-700 font-bold mb-2'>Invalid file type.</div>";
+    }
 }
 
 // Handle update profile
@@ -55,6 +73,19 @@ if (isset($_POST['delete_account'])) {
         $message = "<div class='text-red-700 font-bold mb-2'>Failed to delete account.</div>";
     }
 }
+
+function updateUserProfilePicture($user_id, $profile_picture_path)
+{
+    $result = false;
+    if ($user_id != "" && $profile_picture_path != "") {
+        $conn = my_connectDB();
+        $profile_picture_path_sql = mysqli_real_escape_string($conn, $profile_picture_path);
+        $sql_query = "UPDATE Users SET profile_picture='$profile_picture_path_sql' WHERE user_id='$user_id'";
+        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        my_closeDB($conn);
+    }
+    return $result;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,8 +98,8 @@ if (isset($_POST['delete_account'])) {
     <!-- Navbar -->
     <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
         <div class="flex items-center gap-3">
-            <img src="logo.png" alt="Logo SmashZone"
-                class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" />
+            <img src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture"
+                class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-white" />
             <a href="Dashboard.php" class="text-2xl font-bold">SmashZone</a>
         </div>
         <!-- Desktop Menu -->
@@ -79,11 +110,8 @@ if (isset($_POST['delete_account'])) {
                 <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
             </div>
             <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition ml-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
-                </svg>
+                <img src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture"
+                    class="w-8 h-8 rounded-full object-cover" />
             </a>
         </div>
         <!-- Mobile Right: Hamburger + Profile -->
@@ -95,11 +123,8 @@ if (isset($_POST['delete_account'])) {
                 </svg>
             </button>
             <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
-                </svg>
+                <img src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture"
+                    class="w-8 h-8 rounded-full object-cover" />
             </a>
         </div>
         <!-- Mobile Menu -->
@@ -115,11 +140,18 @@ if (isset($_POST['delete_account'])) {
     <main class="flex flex-col items-center justify-center min-h-[80vh] px-2 py-8">
         <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 mt-8">
             <div class="flex flex-col items-center mb-6">
+                <img src="<?= htmlspecialchars($profile_picture) ?>" alt="Profile Picture"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-green-700 mb-2" />
                 <span class="text-2xl font-bold text-green-800 mb-2"><?= htmlspecialchars($username) ?></span>
                 <span class="text-gray-600"><?= htmlspecialchars($email) ?></span>
                 <span class="text-gray-600"><?= htmlspecialchars($phone) ?></span>
             </div>
             <?= $message ?>
+            <form method="POST" enctype="multipart/form-data" class="mb-6 flex flex-col items-center gap-2">
+                <label class="block font-semibold mb-1">Change Profile Picture</label>
+                <input type="file" name="profile_picture" accept="image/*" class="mb-2" required>
+                <button type="submit" name="upload_picture" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-900">Upload</button>
+            </form>
             <form method="POST" class="space-y-4 mb-6">
                 <div>
                     <label class="block font-semibold mb-1">Username</label>
