@@ -2,6 +2,16 @@
 session_start();
 require_once "CRUD/Controller.php";
 
+// Cancel handler DITARUH PALING ATAS!
+if (isset($_POST['cancel_transaction_id']) && isset($_POST['cancel_booking_id'])) {
+    $tid = $_POST['cancel_transaction_id'];
+    $bid = $_POST['cancel_booking_id'];
+    deleteTransactions($tid);
+    deleteBookings($bid);
+    // Optional: tampilkan pesan sukses
+    $message = "<div class='text-green-700 font-bold mb-2'>Booking cancelled successfully.</div>";
+}
+
 // Get profile picture from session if available
 if (isset($_SESSION['profile_picture'])) {
     $profile_picture = $_SESSION['profile_picture'];
@@ -9,12 +19,12 @@ if (isset($_SESSION['profile_picture'])) {
 } else {
     $profile_picture = "";
     $user_profile_picture = "";
-    
+
     // Try to get from database if user is logged in
     if (isset($_SESSION['user_id'])) {
         $user = getUserID($_SESSION['user_id']);
         if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-            $profile_picture = $user['profile_picture']; 
+            $profile_picture = $user['profile_picture'];
             $user_profile_picture = $user['profile_picture'];
             // Store in session for future use
             $_SESSION['profile_picture'] = $profile_picture;
@@ -166,13 +176,19 @@ if (isset($_SESSION['profile_picture'])) {
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
         $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-        // Tampilkan semua transaksi user, baik yang sudah dibayar maupun belum
         $user_transactions = [];
         if ($user_id) {
             $all_transactions = readTransactions();
+            $today = date('Y-m-d');
             foreach ($all_transactions as $transaction) {
                 if (isset($transaction['user_id']) && $transaction['user_id'] == $user_id) {
-                    $user_transactions[] = $transaction;
+                    // Ambil data booking terkait
+                    $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
+                    $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : null;
+                    // Hanya tampilkan booking hari ini dan seterusnya
+                    if ($booking_date && $booking_date >= $today) {
+                        $user_transactions[] = $transaction;
+                    }
                 }
             }
         }
@@ -181,7 +197,7 @@ if (isset($_SESSION['profile_picture'])) {
                 <table class="min-w-full bg-white border border-green-200 rounded-lg shadow text-xs md:text-base">
                     <thead>
                         <tr class="bg-green-100 text-green-900">
-                            <th class="py-2 px-2 md:px-4 border-b">Booking ID</th>
+                            <!-- <th class="py-2 px-2 md:px-4 border-b">Booking ID</th> -->
                             <th class="py-2 px-2 md:px-4 border-b">Order Name</th>
                             <th class="py-2 px-2 md:px-4 border-b">Field Name</th>
                             <th class="py-2 px-2 md:px-4 border-b">Booking Date</th>
@@ -194,25 +210,25 @@ if (isset($_SESSION['profile_picture'])) {
                     <tbody>
                         <?php foreach ($user_transactions as $transaction): ?>
                             <?php
-                                $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
-                                $order_name = $booking && isset($booking['order_name']) ? $booking['order_name'] : '-';
-                                $fieldName = $booking && isset($booking['field_id']) ? $booking['field_id'] : '-';
-                                if ($booking && function_exists('getFieldID')) {
-                                    $field = getFieldID($booking['field_id']);
-                                    if ($field && isset($field['field_name'])) {
-                                        $fieldName = $field['field_name'];
-                                    }
+                            $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
+                            $order_name = $booking && isset($booking['order_name']) ? $booking['order_name'] : '-';
+                            $fieldName = $booking && isset($booking['field_id']) ? $booking['field_id'] : '-';
+                            if ($booking && function_exists('getFieldID')) {
+                                $field = getFieldID($booking['field_id']);
+                                if ($field && isset($field['field_name'])) {
+                                    $fieldName = $field['field_name'];
                                 }
-                                $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : '-';
-                                $start_time = $booking && isset($booking['start_time']) ? $booking['start_time'] : '-';
-                                $end_time = $booking && isset($booking['end_time']) ? $booking['end_time'] : '-';
-                                $today = date('Y-m-d');
-                                $isPaidBool = isset($transaction['isPaid']) && $transaction['isPaid'] == 1;
-                                $can_cancel = ($booking_date !== '-' && $today < $booking_date && !$isPaidBool);
-                                $isPaid = $isPaidBool ? '<span class="text-green-700 font-semibold">Paid</span>' : '<span class="text-red-600 font-semibold">Not Paid</span>';
+                            }
+                            $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : '-';
+                            $start_time = $booking && isset($booking['start_time']) ? $booking['start_time'] : '-';
+                            $end_time = $booking && isset($booking['end_time']) ? $booking['end_time'] : '-';
+                            $today = date('Y-m-d');
+                            $isPaidBool = isset($transaction['isPaid']) && $transaction['isPaid'] == 1;
+                            $can_cancel = ($booking_date !== '-' && $today < $booking_date && !$isPaidBool);
+                            $isPaid = $isPaidBool ? '<span class="text-green-700 font-semibold">Paid</span>' : '<span class="text-red-600 font-semibold">Not Paid</span>';
                             ?>
                             <tr class="text-center border-b hover:bg-green-50">
-                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td>
+                                <!-- <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td> -->
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($order_name) ?></td>
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($fieldName) ?></td>
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking_date) ?></td>
@@ -223,10 +239,14 @@ if (isset($_SESSION['profile_picture'])) {
                                     <?php if ($isPaidBool): ?>
                                         <span class="text-gray-400 italic">Not cancellable</span>
                                     <?php elseif ($can_cancel): ?>
-                                        <a href="CRUD/Delete.php?deleteTransactionID=<?= $transaction['transaction_id'] ?>&deleteBookingID=<?= $transaction['booking_id'] ?>"
-                                           class="bg-red-600 hover:bg-red-800 text-white px-2 md:px-3 py-1 rounded text-xs md:text-sm transition block md:inline">
-                                            Cancel
-                                        </a>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="cancel_transaction_id" value="<?= $transaction['transaction_id'] ?>">
+                                            <input type="hidden" name="cancel_booking_id" value="<?= $transaction['booking_id'] ?>">
+                                            <button type="submit"
+                                                class="bg-red-600 hover:bg-red-800 text-white px-2 md:px-3 py-1 rounded text-xs md:text-sm transition block md:inline">
+                                                Cancel
+                                            </button>
+                                        </form>
                                     <?php else: ?>
                                         <span class="text-gray-400 italic">Not cancellable</span>
                                     <?php endif; ?>
@@ -241,6 +261,17 @@ if (isset($_SESSION['profile_picture'])) {
         <?php else: ?>
             <div class="text-center text-gray-500 text-sm md:text-base">Please log in to see your bookings.</div>
         <?php endif; ?>
+
+        <?php
+        if (isset($_POST['cancel_transaction_id']) && isset($_POST['cancel_booking_id'])) {
+            $tid = $_POST['cancel_transaction_id'];
+            $bid = $_POST['cancel_booking_id'];
+            deleteTransactions($tid);
+            deleteBookings($bid);
+            // Optional: tampilkan pesan sukses
+            $message = "<div class='text-green-700 font-bold mb-2'>Booking cancelled successfully.</div>";
+        }
+        ?>
     </section>
 
     <script>

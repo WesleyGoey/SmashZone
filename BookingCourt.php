@@ -9,21 +9,17 @@ if (isset($_SESSION['profile_picture'])) {
 } else {
     $profile_picture = "";
     $user_profile_picture = "";
-    
-    // Try to get from database if user is logged in
     if (isset($_SESSION['user_id'])) {
         $user = getUserID($_SESSION['user_id']);
         if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-            $profile_picture = $user['profile_picture']; 
+            $profile_picture = $user['profile_picture'];
             $user_profile_picture = $user['profile_picture'];
-            // Store in session for future use
             $_SESSION['profile_picture'] = $profile_picture;
         }
     }
 }
 
 include_once("CRUD/Controller.php");
-session_start();
 
 // Get court name from URL
 $court = isset($_GET['court']) ? $_GET['court'] : '';
@@ -54,40 +50,75 @@ if (isset($_POST['book_submit'])) {
     $booking_price = $price_per_hour;
 
     if ($field_id && $order_name != '' && $booking_date != '' && $start_time != '' && $end_time != '') {
-        $result = createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
-        if ($result) {
-            // Get the last inserted booking_id using a new connection
-            $conn = my_connectDB();
-            $booking_id = null;
-            $get_id_query = "SELECT booking_id FROM Bookings WHERE order_name='$order_name' AND field_id='$field_id' AND booking_date='$booking_date' AND start_time='$start_time' AND end_time='$end_time' ORDER BY booking_id DESC LIMIT 1";
-            $get_id_result = mysqli_query($conn, $get_id_query);
-            if ($get_id_result && $row = mysqli_fetch_assoc($get_id_result)) {
-                $booking_id = $row['booking_id'];
-            }
-
-            // Calculate duration in hours
-            $start = strtotime($start_time);
-            $end = strtotime($end_time);
-            $hours = ($end - $start) / 3600;
-            if ($hours < 1) $hours = 1; // Minimum 1 hour
-
-            // Create transaction for this booking
-            $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-            $order_date = date('Y-m-d H:i:s');
-            $amount = $booking_price * $hours;
-            $isPaid = 0;
-            if ($user_id && $booking_id) {
-                // Insert NULL for payment_method and payment_date using direct SQL
-                $sql = "INSERT INTO Transactions (user_id, booking_id, order_date, amount, payment_method, payment_date, isPaid) 
-                        VALUES ('$user_id', '$booking_id', '$order_date', '$amount', NULL, NULL, '$isPaid')";
-                mysqli_query($conn, $sql);
-            }
-            my_closeDB($conn);
-
-            header("Location: Booking.php");
-            exit();
+        // Validasi booking_date harus minimal besok
+        $min_date = date('Y-m-d', strtotime('+1 day'));
+        if ($booking_date < $min_date) {
+            $message = "<div class='text-red-700 font-bold mb-2'>Booking date must be at least one day in advance.</div>";
         } else {
-            $message = "<div class='text-red-700 font-bold mb-2'>Booking Failed!</div>";
+            // Validasi jam booking
+            $start_hour = (int)date('H', strtotime($start_time));
+            $end_hour = (int)date('H', strtotime($end_time));
+            $start_min = (int)date('i', strtotime($start_time));
+            $end_min = (int)date('i', strtotime($end_time));
+            $start_total = $start_hour * 60 + $start_min;
+            $end_total = $end_hour * 60 + $end_min;
+
+            if ($start_total < 8 * 60 || $end_total > 22 * 60) {
+                $message = "<div class='text-red-700 font-bold mb-2'>Booking time must be between 08:00 and 22:00.</div>";
+            } elseif ($end_total - $start_total < 60) {
+                $message = "<div class='text-red-700 font-bold mb-2'>Minimum booking duration is 1 hour.</div>";
+            } else {
+                // CEK APAKAH SUDAH ADA BOOKING DI LAPANGAN DAN WAKTU YANG SAMA
+                $overlap = false;
+                $all_bookings = readBookings();
+                foreach ($all_bookings as $b) {
+                    if (
+                        $b['field_id'] == $field_id &&
+                        $b['booking_date'] == $booking_date &&
+                        (
+                            // Cek overlap waktu
+                            ($start_time < $b['end_time'] && $end_time > $b['start_time'])
+                        )
+                    ) {
+                        $overlap = true;
+                        break;
+                    }
+                }
+                if ($overlap) {
+                    $message = "<div class='text-red-700 font-bold mb-2'>Court is not available at the selected date and time.</div>";
+                } else {
+                    $result = createBookings($order_name, $field_id, $booking_date, $start_time, $end_time, $booking_price, $status);
+                    if ($result) {
+                        // Get the last inserted booking_id using a new connection
+                        $conn = my_connectDB();
+                        $booking_id = null;
+                        $get_id_query = "SELECT booking_id FROM Bookings WHERE order_name='$order_name' AND field_id='$field_id' AND booking_date='$booking_date' AND start_time='$start_time' AND end_time='$end_time' ORDER BY booking_id DESC LIMIT 1";
+                        $get_id_result = mysqli_query($conn, $get_id_query);
+                        if ($get_id_result && $row = mysqli_fetch_assoc($get_id_result)) {
+                            $booking_id = $row['booking_id'];
+                        }
+                        $start = strtotime($start_time);
+                        $end = strtotime($end_time);
+                        $hours = ($end - $start) / 3600;
+                        if ($hours < 1) $hours = 1;
+                        $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+                        $order_date = date('Y-m-d H:i:s');
+                        $amount = $booking_price * $hours;
+                        $isPaid = 0;
+                        if ($user_id && $booking_id) {
+                            $sql = "INSERT INTO Transactions (user_id, booking_id, order_date, amount, payment_method, payment_date, isPaid) 
+                                    VALUES ('$user_id', '$booking_id', '$order_date', '$amount', NULL, NULL, '$isPaid')";
+                            mysqli_query($conn, $sql);
+                        }
+                        my_closeDB($conn);
+
+                        header("Location: Booking.php");
+                        exit();
+                    } else {
+                        $message = "<div class='text-red-700 font-bold mb-2'>Booking Failed!</div>";
+                    }
+                }
+            }
         }
     } else {
         $message = "<div class='text-red-700 font-bold mb-2'>Please fill all fields!</div>";
@@ -96,11 +127,14 @@ if (isset($_POST['book_submit'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <title>Booking Court - SmashZone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-green-50">
     <!-- Navbar User -->
     <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
@@ -158,9 +192,37 @@ if (isset($_POST['book_submit'])) {
             <?= $message ?>
             <form method="POST" class="space-y-4">
                 <p>Order Name: <input type="text" name="order_name" required class="border px-2 py-1 rounded"></p>
-                <p>Booking Date: <input type="date" name="booking_date" required class="border px-2 py-1 rounded"></p>
-                <p>Start Time: <input type="time" name="start_time" required class="border px-2 py-1 rounded" step="3600"></p>
-                <p>End Time: <input type="time" name="end_time" required class="border px-2 py-1 rounded" step="3600"></p>
+                <p>
+                    Booking Date:
+                    <input
+                        type="date"
+                        name="booking_date"
+                        required
+                        class="border px-2 py-1 rounded"
+                        min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
+                </p>
+                <p>
+                    Start Time:
+                    <input
+                        type="time"
+                        name="start_time"
+                        required
+                        class="border px-2 py-1 rounded"
+                        min="08:00"
+                        max="21:00"
+                        step="3600">
+                </p>
+                <p>
+                    End Time:
+                    <input
+                        type="time"
+                        name="end_time"
+                        required
+                        class="border px-2 py-1 rounded"
+                        min="09:00"
+                        max="22:00"
+                        step="3600">
+                </p>
                 <button type="submit" name="book_submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-900">Book Now</button>
             </form>
         <?php else: ?>
@@ -178,4 +240,5 @@ if (isset($_POST['book_submit'])) {
         });
     </script>
 </body>
+
 </html>

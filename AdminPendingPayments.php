@@ -1,3 +1,71 @@
+<?php
+session_start();
+require_once __DIR__ . '/CRUD/Controller.php';
+
+// Ambil tanggal dari GET, jika ada, simpan ke session. Jika tidak ada, ambil dari session. Jika tidak ada juga, default hari ini.
+if (isset($_GET['date'])) {
+    $_SESSION['admin_selected_date'] = $_GET['date'];
+    $selectedDate = $_GET['date'];
+} elseif (isset($_SESSION['admin_selected_date'])) {
+    $selectedDate = $_SESSION['admin_selected_date'];
+} else {
+    $selectedDate = date('Y-m-d');
+    $_SESSION['admin_selected_date'] = $selectedDate;
+}
+
+// Handle mark as paid action with payment method only, payment_date is now auto
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_paid'], $_POST['transaction_id'])) {
+    $transaction_id = $_POST['transaction_id'];
+    $payment_method = trim($_POST['payment_method']);
+    $payment_date = date('Y-m-d\TH:i'); // Current date and time in HTML datetime-local format
+
+    if ($payment_method) {
+        if (function_exists('updateTransactions')) {
+            // Get current transaction data
+            $transactions = readTransactions();
+            $transaction = null;
+            foreach ($transactions as $t) {
+                if ($t['transaction_id'] == $transaction_id) {
+                    $transaction = $t;
+                    break;
+                }
+            }
+            if ($transaction) {
+                updateTransactions(
+                    $transaction_id,
+                    $transaction['user_id'],
+                    $transaction['booking_id'],
+                    $transaction['order_date'],
+                    $transaction['amount'],
+                    $payment_method,
+                    $payment_date,
+                    1 // isPaid
+                );
+            }
+        } else {
+            // Fallback: direct SQL if updateTransactions doesn't exist
+            $conn = my_connectDB();
+            if ($conn) {
+                $transaction_id_safe = mysqli_real_escape_string($conn, $transaction_id);
+                $payment_method_safe = mysqli_real_escape_string($conn, $payment_method);
+                $payment_date_safe = mysqli_real_escape_string($conn, $payment_date);
+                $sql = "UPDATE Transactions SET isPaid=1, payment_method='$payment_method_safe', payment_date='$payment_date_safe' WHERE transaction_id='$transaction_id_safe'";
+                mysqli_query($conn, $sql);
+                my_closeDB($conn);
+            }
+        }
+    }
+}
+
+// Get all transactions that are not paid and booking date == selectedDate
+$pendingTransactions = array_filter(readTransactions(), function ($t) use ($selectedDate) {
+    if (!isset($t['isPaid']) || $t['isPaid'] != 0) return false;
+    if (!isset($t['booking_id'])) return false;
+    $booking = function_exists('getBookingID') ? getBookingID($t['booking_id']) : null;
+    if (!$booking || !isset($booking['booking_date'])) return false;
+    return $booking['booking_date'] === $selectedDate;
+});
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -63,61 +131,11 @@
     </header>
     <!-- /Navigation Bar -->
 
-    <!-- Admin Content Placeholder -->
     <main class="max-w-full md:max-w-4xl mx-auto mt-10 md:mt-24 bg-white p-4 md:p-8 rounded-lg shadow">
-        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">Pending Payments</h2>
+        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">
+            Pending Payments for <?= date('d M Y', strtotime($selectedDate)) ?>
+        </h2>
         <?php
-        require_once __DIR__ . '/CRUD/Controller.php';
-
-        // Handle mark as paid action with payment method and date
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_paid'], $_POST['transaction_id'])) {
-            $transaction_id = $_POST['transaction_id'];
-            $payment_method = trim($_POST['payment_method']);
-            $payment_date = trim($_POST['payment_date']);
-
-            if ($payment_method && $payment_date) {
-                if (function_exists('updateTransactions')) {
-                    // Get current transaction data
-                    $transactions = readTransactions();
-                    $transaction = null;
-                    foreach ($transactions as $t) {
-                        if ($t['transaction_id'] == $transaction_id) {
-                            $transaction = $t;
-                            break;
-                        }
-                    }
-                    if ($transaction) {
-                        updateTransactions(
-                            $transaction_id,
-                            $transaction['user_id'],
-                            $transaction['booking_id'],
-                            $transaction['order_date'],
-                            $transaction['amount'],
-                            $payment_method,
-                            $payment_date,
-                            1 // isPaid
-                        );
-                    }
-                } else {
-                    // Fallback: direct SQL if updateTransactions doesn't exist
-                    $conn = my_connectDB();
-                    if ($conn) {
-                        $transaction_id_safe = mysqli_real_escape_string($conn, $transaction_id);
-                        $payment_method_safe = mysqli_real_escape_string($conn, $payment_method);
-                        $payment_date_safe = mysqli_real_escape_string($conn, $payment_date);
-                        $sql = "UPDATE Transactions SET isPaid=1, payment_method='$payment_method_safe', payment_date='$payment_date_safe' WHERE transaction_id='$transaction_id_safe'";
-                        mysqli_query($conn, $sql);
-                        my_closeDB($conn);
-                    }
-                }
-            }
-        }
-
-        // Get all transactions that are not paid
-        $pendingTransactions = array_filter(readTransactions(), function($t) {
-            return isset($t['isPaid']) && $t['isPaid'] == 0;
-        });
-
         if ($pendingTransactions && count($pendingTransactions) > 0) {
             echo "<div class='flex flex-col gap-4'>";
             foreach ($pendingTransactions as $transaction) {
@@ -141,31 +159,30 @@
                             <span class='text-green-800'>" . htmlspecialchars($username) . "</span>
                         </div>
                     </div>";
-            if ($showForm) {
-                echo "
+                if ($showForm) {
+                    echo "
                 <form method='POST' class='mt-2 md:mt-0 flex flex-col gap-2 md:flex-row md:items-center'>
                     <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
                     <input type='text' name='payment_method' placeholder='Payment Method' required class='border rounded px-2 py-1 w-full md:w-auto' />
-                    <input type='datetime-local' name='payment_date' required class='border rounded px-2 py-1 w-full md:w-auto' />
                     <button type='submit' name='mark_paid' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition w-full md:w-auto'>Confirm Paid</button>
                 </form>
                 ";
-            } else {
-                echo "
+                } else {
+                    echo "
                 <form method='POST' class='mt-2 md:mt-0'>
                     <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
                     <button type='submit' name='show_form' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition w-full md:w-auto'>Mark as Paid</button>
                 </form>
                 ";
+                }
+                echo "</div>";
             }
             echo "</div>";
+        } else {
+            echo "<div class='text-center text-gray-500'>No pending payments found.</div>";
         }
-        echo "</div>";
-    } else {
-        echo "<div class='text-center text-gray-500'>No pending payments found.</div>";
-    }
-    ?>
-</main>
+        ?>
+    </main>
 
     <script>
         // Hamburger menu toggle

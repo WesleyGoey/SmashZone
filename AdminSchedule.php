@@ -1,3 +1,33 @@
+<?php
+session_start();
+require_once __DIR__ . '/CRUD/Controller.php';
+
+// Ambil tanggal dari GET, jika ada simpan ke session. Jika tidak ada, ambil dari session. Jika tidak ada juga, default hari ini.
+if (isset($_GET['date'])) {
+    $_SESSION['admin_selected_date'] = $_GET['date'];
+    $selectedDate = $_GET['date'];
+} elseif (isset($_SESSION['admin_selected_date'])) {
+    $selectedDate = $_SESSION['admin_selected_date'];
+} else {
+    $selectedDate = date('Y-m-d');
+    $_SESSION['admin_selected_date'] = $selectedDate;
+}
+
+// Ambil semua bookings
+$bookings = readBookings();
+
+// Filter hanya booking di tanggal yang dipilih
+$selectedBookings = array_filter($bookings, function ($b) use ($selectedDate) {
+    return isset($b['booking_date']) && $b['booking_date'] === $selectedDate;
+});
+
+// Sort by booking_date and start_time
+usort($selectedBookings, function ($a, $b) {
+    $dateA = $a['booking_date'] . ' ' . $a['start_time'];
+    $dateB = $b['booking_date'] . ' ' . $b['start_time'];
+    return strcmp($dateA, $dateB);
+});
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -63,19 +93,16 @@
     </header>
     <!-- /Navigation Bar -->
 
-    <!-- Admin Content Placeholder -->
     <main class="max-w-full md:max-w-4xl mx-auto mt-10 md:mt-24 bg-white p-4 md:p-8 rounded-lg shadow">
-        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">All Field Bookings</h2>
-        <?php
-        require_once __DIR__ . '/CRUD/Controller.php';
-        $bookings = readBookings();
-        // Sort by booking_date and start_time
-        usort($bookings, function($a, $b) {
-            $dateA = $a['booking_date'] . ' ' . $a['start_time'];
-            $dateB = $b['booking_date'] . ' ' . $b['start_time'];
-            return strcmp($dateA, $dateB);
-        });
-        if (count($bookings) > 0): ?>
+        <form method="get" class="mb-8 flex flex-col md:flex-row items-center gap-4 justify-center">
+            <label for="date" class="font-semibold text-green-800">Select Date:</label>
+            <input type="date" id="date" name="date" value="<?= htmlspecialchars($selectedDate) ?>" class="border px-2 py-1 rounded" required>
+            <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-900 transition">Show</button>
+        </form>
+        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">
+            Field Bookings for <?= date('d M Y', strtotime($selectedDate)) ?>
+        </h2>
+        <?php if (count($selectedBookings) > 0): ?>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-green-200 rounded-lg shadow text-xs md:text-base">
                     <thead>
@@ -89,16 +116,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($bookings as $booking): ?>
+                        <?php foreach ($selectedBookings as $booking): ?>
                             <?php
-                                // Get field name from field_id
-                                $fieldName = $booking['field_id'];
-                                if (function_exists('getFieldID')) {
-                                    $field = getFieldID($booking['field_id']);
-                                    if ($field && isset($field['field_name'])) {
-                                        $fieldName = $field['field_name'];
-                                    }
+                            $fieldName = $booking['field_id'];
+                            if (function_exists('getFieldID')) {
+                                $field = getFieldID($booking['field_id']);
+                                if ($field && isset($field['field_name'])) {
+                                    $fieldName = $field['field_name'];
                                 }
+                            }
                             ?>
                             <tr class="text-center border-b hover:bg-green-50">
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['booking_id']) ?></td>
@@ -113,7 +139,7 @@
                 </table>
             </div>
         <?php else: ?>
-            <div class="text-center text-gray-500 text-sm md:text-base">No bookings found.</div>
+            <div class="text-center text-gray-500 text-sm md:text-base">No bookings for this date.</div>
         <?php endif; ?>
     </main>
 
