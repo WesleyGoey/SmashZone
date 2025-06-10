@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Create uploads directory if it doesn't exist
-$uploads_dir = __DIR__ . "/uploads";
+$uploads_dir = "uploads";
 if (!file_exists($uploads_dir)) {
     mkdir($uploads_dir, 0777, true);
 }
@@ -17,13 +17,24 @@ $username = isset($user['username']) ? $user['username'] : '';
 $email = isset($user['email']) ? $user['email'] : '';
 $phone = isset($user['phone']) ? $user['phone'] : '';
 $password = isset($user['password']) ? $user['password'] : '';
-$profile_picture = isset($user['profile_picture']) && $user['profile_picture'] ? $user['profile_picture'] : '';
+
+// Get profile picture from session if available, otherwise from database
+if (isset($_SESSION['profile_picture'])) {
+    $profile_picture = $_SESSION['profile_picture'];
+} else {
+    $profile_picture = isset($user['profile_picture']) && $user['profile_picture'] ? $user['profile_picture'] : '';
+    // Store in session for future use
+    if ($profile_picture) {
+        $_SESSION['profile_picture'] = $profile_picture;
+    }
+}
+
 $message = '';
 
 // Handle profile picture upload
 if (isset($_POST['upload_picture']) && isset($_FILES['profile_picture'])) {
     if ($_FILES['profile_picture']['error'] == 0) {
-        $target_dir = __DIR__ . "/uploads/";
+        $target_dir = "uploads/"; // Simplified path - relative to root
         // Create directory if it doesn't exist
         if (!is_dir($target_dir)) {
             if (!mkdir($target_dir, 0777, true)) {
@@ -37,15 +48,17 @@ if (isset($_POST['upload_picture']) && isset($_FILES['profile_picture'])) {
         if (in_array($ext, $allowed)) {
             $new_filename = "profile_" . $_SESSION['user_id'] . "_" . time() . "." . $ext;
             $target_file = $target_dir . $new_filename;
-            $db_path = "uploads/" . $new_filename; // Store relative path in database
+            $db_path = $target_file; // Store the same path format in database
             
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_file)) {
                 if (updateUserProfilePicture($_SESSION['user_id'], $db_path)) {
-                    $profile_picture = $db_path;
-                    $user_profile_picture = $db_path;
+                    $profile_picture = $db_path; 
+                    $_SESSION['profile_picture'] = $db_path; // Store in session for persistence
                     $message = "<div class='text-green-700 font-bold mb-2'>Profile picture updated!</div>";
+                    // Refresh page to show new picture
+                    echo "<meta http-equiv='refresh' content='1;url=Profile.php'>";
                 } else {
-                    $message = "<div class='text-red-700 font-bold mb-2'>Database update failed. Check that your Users table has a profile_picture column.</div>";
+                    $message = "<div class='text-red-700 font-bold mb-2'>Database update failed.</div>";
                 }
             } else {
                 $message = "<div class='text-red-700 font-bold mb-2'>Failed to upload image. Check directory permissions.</div>";

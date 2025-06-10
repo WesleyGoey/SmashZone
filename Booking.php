@@ -2,15 +2,23 @@
 session_start();
 require_once "CRUD/Controller.php";
 
-// Profile picture variables
-$profile_picture = ""; // For profile page display
-$user_profile_picture = ""; // For navbar profile icon
-
-if (isset($_SESSION['user_id'])) {
-    $user = getUserID($_SESSION['user_id']);
-    if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
-        $profile_picture = $user['profile_picture']; 
-        $user_profile_picture = $user['profile_picture'];
+// Get profile picture from session if available
+if (isset($_SESSION['profile_picture'])) {
+    $profile_picture = $_SESSION['profile_picture'];
+    $user_profile_picture = $_SESSION['profile_picture'];
+} else {
+    $profile_picture = "";
+    $user_profile_picture = "";
+    
+    // Try to get from database if user is logged in
+    if (isset($_SESSION['user_id'])) {
+        $user = getUserID($_SESSION['user_id']);
+        if ($user && isset($user['profile_picture']) && $user['profile_picture']) {
+            $profile_picture = $user['profile_picture']; 
+            $user_profile_picture = $user['profile_picture'];
+            // Store in session for future use
+            $_SESSION['profile_picture'] = $profile_picture;
+        }
     }
 }
 ?>
