@@ -9,6 +9,29 @@ if (isset($_SESSION['user_id'])) {
         $user_profile_picture = $user['profile_picture'];
     }
 }
+
+// Handle edit order name
+if (isset($_POST['edit_order_name'], $_POST['edit_booking_id'])) {
+    $edit_booking_id = $_POST['edit_booking_id'];
+    $new_order_name = trim($_POST['new_order_name']);
+    if ($edit_booking_id && $new_order_name) {
+        // Update hanya order_name di database
+        $conn = my_connectDB();
+        if ($conn) {
+            $safe_order_name = mysqli_real_escape_string($conn, $new_order_name);
+            $safe_booking_id = mysqli_real_escape_string($conn, $edit_booking_id);
+            $sql = "UPDATE Bookings SET order_name='$safe_order_name' WHERE booking_id='$safe_booking_id'";
+            mysqli_query($conn, $sql);
+            my_closeDB($conn);
+        }
+    }
+}
+
+// Tangkap ID booking yang sedang diedit agar tetap di baris yang sama
+$editing_booking_id = null;
+if (isset($_POST['show_edit']) && isset($_POST['edit_booking_id'])) {
+    $editing_booking_id = $_POST['edit_booking_id'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -164,9 +187,8 @@ if (isset($_SESSION['user_id'])) {
                 if (isset($transaction['user_id']) && $transaction['user_id'] == $user_id) {
                     // Ambil data booking terkait
                     $booking = function_exists('getBookingID') ? getBookingID($transaction['booking_id']) : null;
-                    $booking_date = $booking && isset($booking['booking_date']) ? $booking['booking_date'] : null;
-                    // Hanya tampilkan booking hari ini dan seterusnya
-                    if ($booking_date && $booking_date >= $today) {
+                    // TAMPILKAN BOOKING USER HARI INI DAN SETERUSNYA
+                    if ($booking && isset($booking['booking_date']) && $booking['booking_date'] >= $today) {
                         $user_transactions[] = $transaction;
                     }
                 }
@@ -207,9 +229,23 @@ if (isset($_SESSION['user_id'])) {
                             $can_cancel = ($booking_date !== '-' && $today < $booking_date && !$isPaidBool);
                             $isPaid = $isPaidBool ? '<span class="text-green-700 font-semibold">Paid</span>' : '<span class="text-red-600 font-semibold">Not Paid</span>';
                             ?>
-                            <tr class="text-center border-b hover:bg-green-50">
-                                <!-- <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td> -->
-                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($order_name) ?></td>
+                            <tr class="text-center border-b hover:bg-green-50" id="booking-row-<?= htmlspecialchars($booking['booking_id']) ?>">
+                                <td class="py-2 px-2 md:px-4">
+                                    <?php if ($editing_booking_id == $booking['booking_id']): ?>
+                                        <form method="POST" class="flex gap-2 items-center" id="edit-form-<?= htmlspecialchars($booking['booking_id']) ?>">
+                                            <input type="hidden" name="edit_booking_id" value="<?= htmlspecialchars($booking['booking_id']) ?>">
+                                            <input type="text" name="new_order_name" value="<?= htmlspecialchars($order_name) ?>" class="border px-2 py-1 rounded" required autofocus>
+                                            <button type="submit" name="edit_order_name" class="bg-green-700 text-white px-2 py-1 rounded">Save</button>
+                                            <button type="button" class="bg-gray-300 text-gray-800 px-2 py-1 rounded" onclick="cancelEdit()">Cancel</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <?= htmlspecialchars($order_name) ?>
+                                        <form method="POST" style="display:inline;" class="inline-edit-form">
+                                            <input type="hidden" name="edit_booking_id" value="<?= htmlspecialchars($booking['booking_id']) ?>">
+                                            <button type="submit" name="show_edit" class="text-blue-600 underline text-xs ml-2">Edit</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($fieldName) ?></td>
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking_date) ?></td>
                                 <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($start_time) ?></td>
@@ -219,7 +255,7 @@ if (isset($_SESSION['user_id'])) {
                                     <?php if ($isPaidBool): ?>
                                         <span class="text-gray-400 italic">Not cancellable</span>
                                     <?php elseif ($can_cancel): ?>
-                                        <form method="POST" style="display:inline;">
+                                        <form method="POST" style="display:inline;" class="cancel-booking-form" data-row="booking-row-<?= htmlspecialchars($booking['booking_id']) ?>">
                                             <input type="hidden" name="cancel_transaction_id" value="<?= $transaction['transaction_id'] ?>">
                                             <input type="hidden" name="cancel_booking_id" value="<?= $transaction['booking_id'] ?>">
                                             <button type="submit"
@@ -236,9 +272,14 @@ if (isset($_SESSION['user_id'])) {
                     </tbody>
                 </table>
             </div>
-        <?php elseif ($user_id): ?>
-            <div class="text-center text-gray-500 text-sm md:text-base">You have no bookings yet.</div>
-        <?php else: ?>
+        <?php endif; ?>
+
+        <div id="no-bookings-msg" class="text-center text-gray-500 text-sm md:text-base my-8"
+             style="display:<?= ($user_id && count($user_transactions) > 0 ? 'none' : 'block') ?>">
+            You have no bookings yet.
+        </div>
+
+        <?php if (!$user_id): ?>
             <div class="text-center text-gray-500 text-sm md:text-base">Please log in to see your bookings.</div>
         <?php endif; ?>
 
@@ -248,8 +289,9 @@ if (isset($_SESSION['user_id'])) {
             $bid = $_POST['cancel_booking_id'];
             deleteTransactions($tid);
             deleteBookings($bid);
-            // Optional: tampilkan pesan sukses
-            $message = "<div class='text-green-700 font-bold mb-2'>Booking cancelled successfully.</div>";
+            // Redirect agar data langsung update setelah cancel
+            header("Location: Booking.php?cancel=success");
+            exit;
         }
         ?>
     </section>
@@ -261,7 +303,55 @@ if (isset($_SESSION['user_id'])) {
         hamburger.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+
+        // Cancel edit (reload page without POST)
+        function cancelEdit() {
+            window.location.href = window.location.pathname + window.location.search;
+        }
+
+        // AJAX cancel booking
+        document.querySelectorAll('.cancel-booking-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const rowId = this.getAttribute('data-row');
+                const formData = new FormData(this);
+                fetch('', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.ok ? Promise.resolve() : Promise.reject())
+                .then(() => {
+                    // Remove the row instantly
+                    const row = document.getElementById(rowId);
+                    if (row) row.remove();
+
+                    // Check if there are any rows left
+                    const tableBody = document.querySelector('table tbody');
+                    if (tableBody && tableBody.children.length === 0) {
+                        // Hide the table container
+                        const tableContainer = tableBody.closest('.overflow-x-auto');
+                        if (tableContainer) tableContainer.style.display = 'none';
+                        // Show the "no bookings" message
+                        const noBookingsMsg = document.getElementById('no-bookings-msg');
+                        if (noBookingsMsg) noBookingsMsg.style.display = 'block';
+                    }
+                });
+            });
+        });
+
+        // Focus input if available and set cursor at the end
+        <?php if ($editing_booking_id): ?>
+        window.onload = function() {
+            var input = document.querySelector('#edit-form-<?= htmlspecialchars($editing_booking_id) ?> input[name="new_order_name"]');
+            if (input) {
+                input.focus();
+                // Set cursor at the end of the value
+                var val = input.value;
+                input.value = '';
+                input.value = val;
+            }
+        };
+        <?php endif; ?>
     </script>
 </body>
-
 </html>
