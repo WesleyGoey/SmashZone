@@ -37,16 +37,15 @@ if (isset($_SESSION['profile_picture'])) {
     <!-- Navigation Bar -->
     <header>
         <!-- Navbar -->
-        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
+        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-4 md:px-8 py-4 md:py-6 relative z-20">
             <div class="flex items-center gap-3">
-                <!-- Always use logo.png for site logo -->
                 <img src="logo.png" alt="Logo SmashZone"
                     class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" />
-                <a href="Dashboard.php" class="text-2xl font-bold">SmashZone</a>
+                <a href="Dashboard.php" class="text-xl md:text-2xl font-bold">SmashZone</a>
             </div>
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
-                <div class="flex gap-10 text-xl">
+                <div class="flex gap-6 md:gap-10 text-lg md:text-xl">
                     <a href="Dashboard.php" class="underline underline-offset-8">Home</a>
                     <a href="Booking.php" class="hover:underline underline-offset-8">Booking</a>
                     <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
@@ -66,7 +65,6 @@ if (isset($_SESSION['profile_picture'])) {
             </div>
             <!-- Mobile Right section -->
             <div class="flex items-center gap-3 md:hidden">
-                <!-- Hamburger button -->
                 <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
                     <?php if ($user_profile_picture): ?>
                         <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
@@ -79,6 +77,13 @@ if (isset($_SESSION['profile_picture'])) {
                         </svg>
                     <?php endif; ?>
                 </a>
+                <!-- Hamburger button -->
+                <button id="hamburger" class="block focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                    </svg>
+                </button>
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu"
@@ -95,17 +100,19 @@ if (isset($_SESSION['profile_picture'])) {
 
     <!-- Home -->
     <section
-        class="flex flex-col md:flex-row items-center justify-between px-8 py-16 bg-white rounded-lg shadow mt-32 mb-28 max-w-5xl mx-auto">
-        <div class="flex-1 md:mb-0 md:mr-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-green-800 mb-4">Welcome to SmashZone!</h1>
-            <p class="text-lg text-gray-700 mb-6">
+        class="flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-10 md:py-16 bg-white rounded-lg shadow mt-24 md:mt-32 mb-16 md:mb-28 max-w-full md:max-w-5xl mx-auto">
+        <div class="flex-1 md:mb-0 md:mr-12 mb-8 md:mb-0">
+            <h1 class="text-3xl md:text-5xl font-bold text-green-800 mb-4 text-center md:text-left">Welcome to SmashZone!</h1>
+            <p class="text-base md:text-lg text-gray-700 mb-6 text-center md:text-left">
                 The best place to book badminton courts, share your experiences, and give feedback. Start your passion
                 for badminton here!
             </p>
-            <a href="Booking.php"
-                class="inline-block bg-green-700 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-green-800 transition">
-                Book Now
-            </a>
+            <div class="flex justify-center md:justify-start">
+                <a href="Booking.php"
+                    class="inline-block bg-green-700 text-white px-6 py-3 rounded-full font-semibold shadow hover:bg-green-800 transition">
+                    Book Now
+                </a>
+            </div>
         </div>
         <div class="w-full md:w-[384px] aspect-video rounded-lg shadow-lg overflow-hidden flex-shrink-0">
             <img src="home.jpg" alt="Badminton Court" class="w-full h-full object-cover" />
@@ -114,71 +121,71 @@ if (isset($_SESSION['profile_picture'])) {
     <!-- /Home -->
 
     <!-- Facilities -->
-    <section class="max-w-5xl mx-auto mt-12 mb-12 py-4">
-        <h2 class="text-4xl font-bold text-green-800 mb-12 text-center">Our Facilities</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section class="max-w-full md:max-w-5xl mx-auto mt-8 md:mt-12 mb-8 md:mb-12 py-4">
+        <h2 class="text-2xl md:text-4xl font-bold text-green-800 mb-8 md:mb-12 text-center">Our Facilities</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="court.jpg" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Court" />
-                <h3 class="font-bold text-xl text-green-700">Premium Courts</h3>
-                <p class="text-gray-600 text-center">High-quality badminton courts with professional flooring.</p>
+                <img src="court.jpg" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Court" />
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Premium Courts</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">High-quality badminton courts with professional flooring.</p>
             </div>
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="lockerroom.jpg" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover"
+                <img src="lockerroom.jpg" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover"
                     alt="Locker Room" />
-                <h3 class="font-bold text-xl text-green-700">Locker Rooms</h3>
-                <p class="text-gray-600 text-center">Clean and secure locker rooms for your convenience.</p>
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Locker Rooms</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">Clean and secure locker rooms for your convenience.</p>
             </div>
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="equipment.jpeg" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover"
+                <img src="equipment.jpeg" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover"
                     alt="Equipment Rental" />
-                <h3 class="font-bold text-xl text-green-700">Equipment Rental</h3>
-                <p class="text-gray-600 text-center">Racket and shuttlecock rental available for all players.</p>
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Equipment Rental</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">Racket and shuttlecock rental available for all players.</p>
             </div>
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="cafe.jpg" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Cafe" />
-                <h3 class="font-bold text-xl text-green-700">Cafe & Refreshments</h3>
-                <p class="text-gray-600 text-center">Enjoy snacks and drinks at our cozy cafe after your game.</p>
+                <img src="cafe.jpg" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Cafe" />
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Cafe & Refreshments</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">Enjoy snacks and drinks at our cozy cafe after your game.</p>
             </div>
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="wifi.avif" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Free WiFi" />
-                <h3 class="font-bold text-xl text-green-700">Free WiFi</h3>
-                <p class="text-gray-600 text-center">Stay connected with complimentary high-speed internet.</p>
+                <img src="wifi.avif" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Free WiFi" />
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Free WiFi</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">Stay connected with complimentary high-speed internet.</p>
             </div>
             <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                <img src="parking.jpg" class="w-48 aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Parking" />
-                <h3 class="font-bold text-xl text-green-700">Spacious Parking</h3>
-                <p class="text-gray-600 text-center">Ample and secure parking space for all visitors.</p>
+                <img src="parking.jpg" class="w-full max-w-[220px] aspect-video mb-3 mt-2 rounded-lg object-cover" alt="Parking" />
+                <h3 class="font-bold text-lg md:text-xl text-green-700">Spacious Parking</h3>
+                <p class="text-gray-600 text-center text-sm md:text-base">Ample and secure parking space for all visitors.</p>
             </div>
         </div>
     </section>
     <!-- /Facilities -->
 
     <!-- Find Us -->
-    <section class="max-w-5xl mx-auto mb-12 px-4 min-h-[70vh] flex flex-col justify-center py-10">
-        <h2 class="text-4xl font-bold text-green-800 mb-12 text-center">Find Us</h2>
-        <div class="flex flex-col md:flex-row gap-12 items-center">
-            <div class="flex-1 rounded-lg overflow-hidden shadow-lg aspect-video min-h-[340px]">
+    <section class="max-w-full md:max-w-5xl mx-auto mb-8 md:mb-12 px-2 md:px-4 min-h-[50vh] md:min-h-[70vh] flex flex-col justify-center py-6 md:py-10">
+        <h2 class="text-2xl md:text-4xl font-bold text-green-800 mb-8 md:mb-12 text-center">Find Us</h2>
+        <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+            <div class="flex-1 rounded-lg overflow-hidden shadow-lg aspect-video min-h-[220px] md:min-h-[340px] w-full">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.633059190508!2d112.65803017477114!3d-7.282524771571229!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fd2228064fc3%3A0xd1c829ec9b890a7b!2sGOR%20Glx%20Badminton!5e0!3m2!1sen!2sid!4v1748495558721!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                    width="100%" height="340" style="border:0;" allowfullscreen="" loading="lazy"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.633059190508!2d112.65803017477114!3d-7.282524771571229!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fd2228064fc3%3A0xd1c829ec9b890a7b!2sGOR%20Glx%20Badminton!5e0!3m2!1sen!2sid!4v1748495558721!5m2!1sen!2sid"
+                    width="100%" height="220" class="min-h-[220px] md:min-h-[340px]" style="border:0;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
-            <div class="flex-1 text-center md:text-left">
-                <h3 class="text-3xl font-semibold text-green-700 mb-4">Our Address</h3>
-                <p class="text-xl text-gray-700 leading-relaxed mb-6">
+            <div class="flex-1 text-center md:text-left mt-6 md:mt-0">
+                <h3 class="text-xl md:text-3xl font-semibold text-green-700 mb-4">Our Address</h3>
+                <p class="text-base md:text-xl text-gray-700 leading-relaxed mb-6">
                     Jl. Raya Lontar No.51, Lontar, Kec. Sambikerep,<br> Kota SBY, Jawa Timur 60216 Surabaya,<br> Prop. Jawa Timur, Jawa Timur 60216
                 </p>
-                <p class="mt-4 text-gray-600 text-2xl">Open: 08.00 - 22.00 WIB</p>
+                <p class="mt-4 text-gray-600 text-lg md:text-2xl">Open: 08.00 - 22.00 WIB</p>
             </div>
         </div>
     </section>
     <!-- /Find Us -->
 
     <!-- Footer -->
-    <footer class="bg-green-800 text-white py-8 mt-16">
-        <div class="max-w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-6 px-6">
-            <div class="text-lg font-semibold mb-4 md:mb-0">© 2025 SmashZone. All rights reserved.</div>
-            <div class="flex gap-6 text-2xl">
+    <footer class="bg-green-800 text-white py-8 mt-8 md:mt-16">
+        <div class="max-w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-6 px-4 md:px-6">
+            <div class="text-base md:text-lg font-semibold mb-4 md:mb-0 text-center md:text-left">© 2025 SmashZone. All rights reserved.</div>
+            <div class="flex gap-4 md:gap-6 text-xl md:text-2xl justify-center md:justify-end">
                 <a href="https://wa.me/628113338500" target="_blank" aria-label="WhatsApp"
                     class="hover:text-green-400 transition">
                     <!-- WhatsApp Icon -->

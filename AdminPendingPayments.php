@@ -64,8 +64,8 @@
     <!-- /Navigation Bar -->
 
     <!-- Admin Content Placeholder -->
-    <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">Pending Payments</h2>
+    <main class="max-w-full md:max-w-4xl mx-auto mt-10 md:mt-24 bg-white p-4 md:p-8 rounded-lg shadow">
+        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">Pending Payments</h2>
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
 
@@ -128,43 +128,44 @@
                         $username = $user['username'];
                     }
                 }
-                // Show payment form for the transaction being marked as paid
                 $showForm = (isset($_POST['show_form']) && $_POST['transaction_id'] == $transaction['transaction_id']);
                 echo "
-                <div class='bg-red-50 border border-red-200 rounded-xl shadow p-4 flex flex-col md:flex-row md:items-center md:justify-between'>
-                    <div>
-                        <span class='font-semibold text-red-800'>Booking ID:</span>
-                        <span class='font-mono'>" . htmlspecialchars($transaction['booking_id']) . "</span>
-                    </div>
-                    <div>
-                        <span class='font-semibold text-gray-700'>Username:</span>
-                        <span class='text-green-800'>" . htmlspecialchars($username) . "</span>
+                <div class='bg-red-50 border border-red-200 rounded-xl shadow p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+                    <div class='flex flex-col md:flex-row md:items-center gap-1 md:gap-4'>
+                        <div>
+                            <span class='font-semibold text-red-800'>Booking ID:</span>
+                            <span class='font-mono break-all'>" . htmlspecialchars($transaction['booking_id']) . "</span>
+                        </div>
+                        <div>
+                            <span class='font-semibold text-gray-700'>Username:</span>
+                            <span class='text-green-800'>" . htmlspecialchars($username) . "</span>
+                        </div>
                     </div>";
-                if ($showForm) {
-                    echo "
-                    <form method='POST' class='mt-2 md:mt-0 flex flex-col md:flex-row gap-2 items-center'>
-                        <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
-                        <input type='text' name='payment_method' placeholder='Payment Method' required class='border rounded px-2 py-1' />
-                        <input type='datetime-local' name='payment_date' required class='border rounded px-2 py-1' />
-                        <button type='submit' name='mark_paid' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition'>Confirm Paid</button>
-                    </form>
-                    ";
-                } else {
-                    echo "
-                    <form method='POST' class='mt-2 md:mt-0'>
-                        <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
-                        <button type='submit' name='show_form' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition'>Mark as Paid</button>
-                    </form>
-                    ";
-                }
-                echo "</div>";
+            if ($showForm) {
+                echo "
+                <form method='POST' class='mt-2 md:mt-0 flex flex-col gap-2 md:flex-row md:items-center'>
+                    <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
+                    <input type='text' name='payment_method' placeholder='Payment Method' required class='border rounded px-2 py-1 w-full md:w-auto' />
+                    <input type='datetime-local' name='payment_date' required class='border rounded px-2 py-1 w-full md:w-auto' />
+                    <button type='submit' name='mark_paid' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition w-full md:w-auto'>Confirm Paid</button>
+                </form>
+                ";
+            } else {
+                echo "
+                <form method='POST' class='mt-2 md:mt-0'>
+                    <input type='hidden' name='transaction_id' value='" . htmlspecialchars($transaction['transaction_id']) . "'>
+                    <button type='submit' name='show_form' class='bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded transition w-full md:w-auto'>Mark as Paid</button>
+                </form>
+                ";
             }
             echo "</div>";
-        } else {
-            echo "<div class='text-center text-gray-500'>No pending payments found.</div>";
         }
-        ?>
-    </main>
+        echo "</div>";
+    } else {
+        echo "<div class='text-center text-gray-500'>No pending payments found.</div>";
+    }
+    ?>
+</main>
 
     <script>
         // Hamburger menu toggle

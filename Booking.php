@@ -161,8 +161,8 @@ if (isset($_SESSION['profile_picture'])) {
     <!-- /Court List -->
 
     <!-- Current Bookings Section -->
-    <section class="max-w-4xl mx-auto my-16 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center text-green-800">Your Current Bookings</h2>
+    <section class="max-w-full md:max-w-4xl mx-auto my-8 md:my-16 bg-white p-4 md:p-8 rounded-lg shadow">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center text-green-800">Your Current Bookings</h2>
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
         $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
@@ -178,17 +178,17 @@ if (isset($_SESSION['profile_picture'])) {
         }
         if ($user_id && count($user_transactions) > 0): ?>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow">
+                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow text-xs md:text-base">
                     <thead>
                         <tr class="bg-green-100 text-green-900">
-                            <th class="py-2 px-4 border-b">Booking ID</th>
-                            <th class="py-2 px-4 border-b">Order Name</th>
-                            <th class="py-2 px-4 border-b">Field Name</th>
-                            <th class="py-2 px-4 border-b">Booking Date</th>
-                            <th class="py-2 px-4 border-b">Start Time</th>
-                            <th class="py-2 px-4 border-b">End Time</th>
-                            <th class="py-2 px-4 border-b">Paid</th>
-                            <th class="py-2 px-4 border-b">Action</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Booking ID</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Order Name</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Field Name</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Booking Date</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Start Time</th>
+                            <th class="py-2 px-2 md:px-4 border-b">End Time</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Paid</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -212,19 +212,19 @@ if (isset($_SESSION['profile_picture'])) {
                                 $isPaid = $isPaidBool ? '<span class="text-green-700 font-semibold">Paid</span>' : '<span class="text-red-600 font-semibold">Not Paid</span>';
                             ?>
                             <tr class="text-center border-b hover:bg-green-50">
-                                <td class="py-2 px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($order_name) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($fieldName) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking_date) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($start_time) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($end_time) ?></td>
-                                <td class="py-2 px-4"><?= $isPaid ?></td>
-                                <td class="py-2 px-4">
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($transaction['booking_id']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($order_name) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($fieldName) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking_date) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($start_time) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($end_time) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= $isPaid ?></td>
+                                <td class="py-2 px-2 md:px-4">
                                     <?php if ($isPaidBool): ?>
                                         <span class="text-gray-400 italic">Not cancellable</span>
                                     <?php elseif ($can_cancel): ?>
                                         <a href="CRUD/Delete.php?deleteTransactionID=<?= $transaction['transaction_id'] ?>&deleteBookingID=<?= $transaction['booking_id'] ?>"
-                                           class="bg-red-600 hover:bg-red-800 text-white px-3 py-1 rounded text-sm transition">
+                                           class="bg-red-600 hover:bg-red-800 text-white px-2 md:px-3 py-1 rounded text-xs md:text-sm transition block md:inline">
                                             Cancel
                                         </a>
                                     <?php else: ?>
@@ -237,9 +237,9 @@ if (isset($_SESSION['profile_picture'])) {
                 </table>
             </div>
         <?php elseif ($user_id): ?>
-            <div class="text-center text-gray-500">You have no bookings yet.</div>
+            <div class="text-center text-gray-500 text-sm md:text-base">You have no bookings yet.</div>
         <?php else: ?>
-            <div class="text-center text-gray-500">Please log in to see your bookings.</div>
+            <div class="text-center text-gray-500 text-sm md:text-base">Please log in to see your bookings.</div>
         <?php endif; ?>
     </section>
 

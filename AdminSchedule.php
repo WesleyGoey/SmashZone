@@ -64,8 +64,8 @@
     <!-- /Navigation Bar -->
 
     <!-- Admin Content Placeholder -->
-    <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">All Field Bookings</h2>
+    <main class="max-w-full md:max-w-4xl mx-auto mt-10 md:mt-24 bg-white p-4 md:p-8 rounded-lg shadow">
+        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">All Field Bookings</h2>
         <?php
         require_once __DIR__ . '/CRUD/Controller.php';
         $bookings = readBookings();
@@ -77,15 +77,15 @@
         });
         if (count($bookings) > 0): ?>
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow">
+                <table class="min-w-full bg-white border border-green-200 rounded-lg shadow text-xs md:text-base">
                     <thead>
                         <tr class="bg-green-100 text-green-900">
-                            <th class="py-2 px-4 border-b">Booking ID</th>
-                            <th class="py-2 px-4 border-b">Order Name</th>
-                            <th class="py-2 px-4 border-b">Field Name</th>
-                            <th class="py-2 px-4 border-b">Booking Date</th>
-                            <th class="py-2 px-4 border-b">Start Time</th>
-                            <th class="py-2 px-4 border-b">End Time</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Booking ID</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Order Name</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Field Name</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Booking Date</th>
+                            <th class="py-2 px-2 md:px-4 border-b">Start Time</th>
+                            <th class="py-2 px-2 md:px-4 border-b">End Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,19 +101,19 @@
                                 }
                             ?>
                             <tr class="text-center border-b hover:bg-green-50">
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking['booking_id']) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking['order_name']) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($fieldName) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking['booking_date']) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking['start_time']) ?></td>
-                                <td class="py-2 px-4"><?= htmlspecialchars($booking['end_time']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['booking_id']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['order_name']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($fieldName) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['booking_date']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['start_time']) ?></td>
+                                <td class="py-2 px-2 md:px-4"><?= htmlspecialchars($booking['end_time']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         <?php else: ?>
-            <div class="text-center text-gray-500">No bookings found.</div>
+            <div class="text-center text-gray-500 text-sm md:text-base">No bookings found.</div>
         <?php endif; ?>
     </main>
 

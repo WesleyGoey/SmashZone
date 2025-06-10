@@ -64,8 +64,8 @@
     <!-- /Navigation Bar -->
 
     <!-- Admin Content Placeholder -->
-    <main class="max-w-4xl mx-auto mt-24 bg-white p-8 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-6 text-center">User Reviews & Feedback</h2>
+    <main class="max-w-full md:max-w-4xl mx-auto mt-10 md:mt-24 bg-white p-4 md:p-8 rounded-lg shadow">
+        <h2 class="text-xl md:text-2xl font-bold mb-6 text-center">User Reviews & Feedback</h2>
         <?php
         // Use CRUD/Controller.php to fetch reviews
         require_once __DIR__ . '/CRUD/Controller.php';
@@ -75,7 +75,7 @@
         $reviews = function_exists('readReviews') ? readReviews() : [];
 
         if ($reviews && count($reviews) > 0) {
-            echo "<div class='grid grid-cols-1 md:grid-cols-2 gap-6'>";
+            echo "<div class='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>";
             foreach ($reviews as $row) {
                 // Get username from Users table using user_id
                 $username = "Unknown";
@@ -86,18 +86,18 @@
                     }
                 }
                 $stars = str_repeat('★', intval($row['rating'])) . str_repeat('☆', 5 - intval($row['rating']));
-                echo "<div class='bg-green-50 border border-green-200 rounded-xl shadow p-6 flex flex-col h-full'>
-                    <div class='flex items-center justify-between mb-2'>
-                        <span class='font-semibold text-green-800 text-lg'>" . htmlspecialchars($username) . "</span>
-                        <span class='text-yellow-500 text-xl'>" . $stars . "</span>
+                echo "<div class='bg-green-50 border border-green-200 rounded-xl shadow p-4 md:p-6 flex flex-col h-full'>
+                    <div class='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1'>
+                        <span class='font-semibold text-green-800 text-base md:text-lg'>" . htmlspecialchars($username) . "</span>
+                        <span class='text-yellow-500 text-lg md:text-xl'>" . $stars . "</span>
                     </div>
-                    <div class='text-gray-700 mb-3 italic'>\"" . nl2br(htmlspecialchars($row['comment'])) . "\"</div>
+                    <div class='text-gray-700 mb-3 italic text-sm md:text-base'>\"" . nl2br(htmlspecialchars($row['comment'])) . "\"</div>
                     <div class='text-gray-400 text-xs text-right mt-auto'>" . htmlspecialchars($row['review_date']) . "</div>
                 </div>";
             }
             echo "</div>";
         } else {
-            echo "<div class='text-center text-gray-500'>No feedback found.</div>";
+            echo "<div class='text-center text-gray-500 text-sm md:text-base'>No feedback found.</div>";
         }
         ?>
     </main>
