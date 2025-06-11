@@ -28,7 +28,7 @@
             $password = $_POST['create_password'];
             $phone = $_POST['create_phone'];
             $isAdmin = isset($_POST['create_isAdmin']) ? 1 : 0;
-            $resultUsers = createUsers($username, $email, $password, $phone, $isAdmin);
+            $resultUsers = createUsers($username, $email, $password, $phone, $isAdmin, NULL);
             if ($resultUsers == 1) {
                 echo "<h1>Create User Data SUCCESS</h1>";
             } else {
