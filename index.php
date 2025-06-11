@@ -13,9 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
     $password = trim($_POST['register_password']);
     $phone = trim($_POST['register_phone']);
     $isAdmin = 0; // Default to regular user
+    $profile_picture = NULL; // Default to no profile picture
 
     if ($username && $email && $password && $phone) {
-        $result = createUsers($username, $email, $password, $phone, $isAdmin);
+        $result = createUsers($username, $email, $password, $phone, $isAdmin, $profile_picture);
         if ($result) {
             // Ambil user yang baru saja didaftarkan
             $users = readUsers();
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_submit'])) {
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['isAdmin'] = $user['isAdmin'];
+                    $_SESSION['profile_picture'] = $user['profile_picture'];
                     break;
                 }
             }

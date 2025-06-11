@@ -14,12 +14,14 @@ function my_closeDB($conn)
     mysqli_close($conn);
 }
 
-function createUsers($username, $email, $password, $phone, $isAdmin)
+function createUsers($username, $email, $password, $phone, $isAdmin, $profile_picture)
 {
+    $result = false; // Initialize result variable with default value
+    
     if ($username != "" && $email != "" && $password != "" && $phone != "" && $isAdmin != "") {
         $conn = my_connectDB();
-        $sql_query = "INSERT INTO Users (username, email, password, phone, isAdmin) 
-                      VALUES ('$username', '$email', '$password', '$phone', '$isAdmin')";
+        $sql_query = "INSERT INTO Users (username, email, password, phone, isAdmin, profile_picture) 
+                      VALUES ('$username', '$email', '$password', '$phone', '$isAdmin', '$profile_picture')";
         $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
         my_closeDB($conn);
     }
@@ -41,24 +43,13 @@ function readUsers()
                 $data['password'] = $row["password"];
                 $data['phone'] = $row["phone"];
                 $data['isAdmin'] = $row["isAdmin"];
+                $data['profile_picture'] = isset($row["profile_picture"]) ? $row["profile_picture"] : "";
                 array_push($allData, $data);
             }
         }
         my_closeDB($conn);
     }
     return $allData;
-}
-
-function deleteUser($user_id)
-{
-    if ($user_id > 0) {
-        $conn = my_connectDB();
-        $sql_query = "DELETE FROM Users WHERE user_id = " . $user_id;
-        $result = mysqli_query($conn, $sql_query) or die("Error: " . mysqli_error($conn));
-        my_closeDB($conn);
-        return $result;
-    }
-    return false;
 }
 function getUserID($user_id)
 {
@@ -105,8 +96,55 @@ function deleteUsers($user_id)
     $result = false;
     if ($user_id != "") {
         $conn = my_connectDB();
+        
+        // Step 1: Delete all reviews by this user
+        $reviews_query = "SELECT review_id FROM Reviews WHERE user_id = '$user_id'";
+        $reviews_result = mysqli_query($conn, $reviews_query);
+        if ($reviews_result) {
+            while ($row = mysqli_fetch_assoc($reviews_result)) {
+                deleteReviews($row['review_id']);
+            }
+        }
+        
+        // Get all transactions to find bookings to delete
+        $transactions_query = "SELECT transaction_id, booking_id FROM Transactions WHERE user_id = '$user_id'";
+        $transactions_result = mysqli_query($conn, $transactions_query);
+        $bookings_to_delete = [];
+        $transactions_to_delete = [];
+        
+        if ($transactions_result) {
+            while ($row = mysqli_fetch_assoc($transactions_result)) {
+                if (!empty($row['booking_id'])) {
+                    $bookings_to_delete[] = $row['booking_id'];
+                }
+                $transactions_to_delete[] = $row['transaction_id'];
+            }
+        }
+        
+        // Step 2: Delete all transactions by this user
+        foreach ($transactions_to_delete as $transaction_id) {
+            deleteTransactions($transaction_id);
+        }
+        
+        // Step 3: Delete all bookings associated with this user
+        foreach ($bookings_to_delete as $booking_id) {
+            deleteBookings($booking_id);
+        }
+        
+        // Step 4: Delete the profile picture if exists
+        $user_query = "SELECT profile_picture FROM Users WHERE user_id = '$user_id'";
+        $user_result = mysqli_query($conn, $user_query);
+        if ($user_result && $user_data = mysqli_fetch_assoc($user_result)) {
+            if (!empty($user_data['profile_picture']) && file_exists($user_data['profile_picture'])) {
+                @unlink($user_data['profile_picture']);
+            }
+        }
+        
+        // Step 5: Finally delete the user
         $sql_query = "DELETE FROM Users WHERE user_id = '$user_id'";
-        $result = mysqli_query($conn, $sql_query) or die(mysqli_error($conn));
+        $result = mysqli_query($conn, $sql_query);
+        
+        // Close the database connection before returning
         my_closeDB($conn);
     }
     return $result;
