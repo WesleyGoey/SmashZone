@@ -161,7 +161,7 @@ function createFields($field_name, $price_per_hour)
     }
     return $result;
 }
-//test
+
 function readFields()
 {
     $allData = array();
