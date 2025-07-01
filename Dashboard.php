@@ -25,16 +25,17 @@ if (isset($_SESSION['user_id'])) {
     <!-- Navigation Bar -->
     <header>
         <!-- Navbar -->
-        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-4 md:px-8 py-4 md:py-6 relative z-20">
+        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
             <div class="flex items-center gap-3">
+                <!-- Always use logo.png for site logo -->
                 <img src="logo.png" alt="Logo SmashZone"
                     class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" />
-                <a href="Dashboard.php" class="text-xl md:text-2xl font-bold">SmashZone</a>
+                <a href="Dashboard.php" class="text-2xl font-bold">SmashZone</a>
             </div>
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
-                <div class="flex gap-6 md:gap-10 text-lg md:text-xl">
-                    <a href="Dashboard.php" class="underline underline-offset-8">Home</a>
+                <div class="flex gap-10 text-xl">
+                    <a href="Dashboard.php" class="underline underline-offset-8 hover:underline">Home</a>
                     <a href="Booking.php" class="hover:underline underline-offset-8">Booking</a>
                     <a href="Feedback.php" class="hover:underline underline-offset-8">Feedback</a>
                 </div>
@@ -54,25 +55,26 @@ if (isset($_SESSION['user_id'])) {
             </div>
             <!-- Mobile Right section -->
             <div class="flex items-center gap-3 md:hidden">
+                <!-- Hamburger button -->
+                <button id="hamburger" class="block focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="white" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                    </svg>
+                </button>
                 <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <?php if ($user_profile_picture): ?>
+                    <?php if (!empty($user_profile_picture)): ?>
                         <img src="<?= htmlspecialchars($user_profile_picture) ?>" alt="Profile Picture"
                             class="w-8 h-8 rounded-full object-cover" />
                     <?php else: ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            viewBox="0 0 24 24">
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
                         </svg>
                     <?php endif; ?>
                 </a>
-                <!-- Hamburger button -->
-                <button id="hamburger" class="block focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
-                    </svg>
-                </button>
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu"

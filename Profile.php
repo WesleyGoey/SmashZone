@@ -167,13 +167,22 @@ if (isset($_POST['logout'])) {
         <!-- Mobile Right section -->
         <div class="flex items-center gap-3 md:hidden">
             <!-- Hamburger button -->
+            <button id="hamburger" class="block focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="white" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+                </svg>
+            </button>
             <a href="Profile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
                 <?php if (!empty($user_profile_picture)): ?>
-                    <img src="<?= htmlspecialchars($user_profile_picture) ?>?v=<?= time() ?>" alt="Profile Picture"
-                        class="w-8 h-8 rounded-full object-cover" />
+                    <img src="<?= htmlspecialchars($user_profile_picture) ?>?nocache=<?= time() ?>"
+                        alt="Profile Picture"
+                        class="w-8 h-8 rounded-full object-cover"
+                        onerror="this.onerror=null; this.src='';" />
                 <?php else: ?>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
                     </svg>
@@ -183,9 +192,11 @@ if (isset($_POST['logout'])) {
         <!-- Mobile Menu -->
         <div id="mobileMenu"
             class="mobile-menu absolute top-full left-0 w-full bg-green-800 text-white flex flex-col gap-2 px-8 py-4 hidden md:hidden z-50">
-            <a href="Dashboard.php" class="block py-2 hover:underline">Home</a>
-            <a href="Booking.php" class="block py-2 hover:underline">Booking</a>
-            <a href="Feedback.php" class="block py-2 hover:underline">Feedback</a>
+            <div class="flex flex-col gap-1">
+                <a href="Dashboard.php" class="block py-2 hover:underline">Home</a>
+                <a href="Booking.php" class="block py-2 hover:underline">Booking</a>
+                <a href="Feedback.php" class="block py-2 hover:underline">Feedback</a>
+            </div>
         </div>
     </nav>
     <!-- End Navbar -->
