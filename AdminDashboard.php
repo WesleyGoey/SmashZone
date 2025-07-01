@@ -47,23 +47,24 @@ $feedbackCount = count(readReviews());
 <body class="bg-green-50 min-h-screen flex flex-col justify-center">
     <!-- Navigation Bar -->
     <header>
-        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-4 md:px-8 py-4 md:py-6 relative z-20">
+        <nav class="bg-green-800 text-white w-full flex items-center justify-between px-6 md:px-8 py-6 md:py-6 relative z-20">
             <div class="flex items-center gap-3">
                 <img src="logo.png" alt="Logo Admin SmashZone"
                     class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" />
-                <a href="AdminDashboard.php" class="text-xl md:text-2xl font-bold">SmashZone Admin</a>
+                <a href="AdminDashboard.php" class="text-2xl font-bold">SmashZone Admin</a>
             </div>
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8">
-                <div class="flex gap-6 md:gap-10 text-lg md:text-xl">
-                    <a href="AdminDashboard.php" class="underline underline-offset-8">Dashboard</a>
-                    <a href="AdminSchedule.php?date=<?= htmlspecialchars($selectedDate) ?>" class="hover:underline underline-offset-8">Schedule</a>
-                    <a href="AdminPendingPayments.php?date=<?= htmlspecialchars($selectedDate) ?>" class="hover:underline underline-offset-8">Pending Payments</a>
+                <div class="flex gap-10 text-xl">
+                    <a href="AdminDashboard.php" class="hover:underline underline-offset-8">Dashboard</a>
+                    <a href="AdminSchedule.php" class="hover:underline underline-offset-8">Schedule</a>
+                    <a href="AdminPendingPayments.php" class="hover:underline underline-offset-8">Pending Payments</a>
                     <a href="AdminFeedback.php" class="hover:underline underline-offset-8">Feedback</a>
                 </div>
-                <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition ml-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
                     </svg>
@@ -77,9 +78,10 @@ $feedbackCount = count(readReviews());
                             d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
                     </svg>
                 </button>
-                <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <a href="AdminProfile.php" class="flex items-center justify-center w-10 h-10 rounded-full bg-white hover:bg-green-700 transition ml-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-800 hover:text-white transition"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        viewBox="0 0 24 24">
                         <circle cx="12" cy="8" r="4" />
                         <path d="M4 20c0-4 8-4 8-4s8 0 8 4" />
                     </svg>
@@ -87,11 +89,11 @@ $feedbackCount = count(readReviews());
             </div>
             <!-- Mobile Menu -->
             <div id="mobileMenu"
-                class="mobile-menu absolute top-full left-0 w-full bg-green-800 text-white flex flex-col gap-2 px-6 py-4 hidden md:hidden z-50">
+                class="mobile-menu absolute top-full left-0 w-full bg-green-800 text-white flex flex-col gap-2 px-8 py-4 hidden md:hidden z-50">
                 <div class="flex flex-col gap-1">
                     <a href="AdminDashboard.php" class="block py-2 hover:underline">Dashboard</a>
-                    <a href="AdminSchedule.php?date=<?= htmlspecialchars($selectedDate) ?>" class="block py-2 hover:underline">Schedule</a>
-                    <a href="AdminPendingPayments.php?date=<?= htmlspecialchars($selectedDate) ?>" class="block py-2 hover:underline">Pending Payments</a>
+                    <a href="AdminSchedule.php" class="block py-2 hover:underline">Schedule</a>
+                    <a href="AdminPendingPayments.php" class="block py-2 hover:underline">Pending Payments</a>
                     <a href="AdminFeedback.php" class="block py-2 hover:underline">Feedback</a>
                 </div>
             </div>
